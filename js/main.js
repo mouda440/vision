@@ -2,8 +2,8 @@
 // <script src="js/api.js"></script> should be included in HTML before this file
 
 // Example for T-shirt
-function addToCart() {
-    const stocks = getStocks();
+async function addToCart() {
+    const stocks = await getStocks();
     if (document.querySelector('h1')?.textContent.includes('T-shirt')) {
         const color = document.getElementById('color').value;
         const style = document.getElementById('style').value;
