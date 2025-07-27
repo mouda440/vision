@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-shirt - THE VISION</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="hero">
+        <img src="img/logo.jpg" alt="THE VISION Logo" class="hero-logo">
+        <h1 class="hero-title">T-shirt</h1>
+        <div class="hero-cart-link">
+            <a href="cart.html" class="cta-btn">Cart</a>
+        </div>
+    </header>
+    <main style="margin-bottom:60px;">
+        <section>
+            <div style="text-align:center;margin:38px 0 38px 0;">
+                <a href="shopping.html" class="cta-btn">Back to Shop</a>
+            </div>
+            <div class="product" style="text-align:center;background:#181818;color:#fff;padding:38px 0 32px 0;border-radius:18px;max-width:480px;margin:auto;box-shadow:0 2px 18px #0002;">
+                <h3>T-shirt</h3>
+                <label for="color">Color:</label>
+                <select id="color" class="color-select-custom" onchange="updateStyles()">
+                    <option value="black">Black</option>
+                    <option value="red">Red</option>
+                </select>
+                <label style="font-weight:500;">Style:</label>
+<div class="style-selector" id="style-selector" style="margin-bottom:12px;"></div>
+<input type="hidden" id="style" name="style" value="grey-black">
+<script>
+// Dynamic style selector logic for tshirt
+(function(){
+    const styleOptions = {
+        black: [
+            { value: 'grey-black', label: 'Grey on Black' },
+            { value: 'white-black', label: 'White on Black' }
+        ],
+        red: [
+            { value: 'white-red', label: 'White on Red' }
+        ]
+    };
+    const selector = document.getElementById('style-selector');
+    const hiddenInput = document.getElementById('style');
+    const colorSelect = document.getElementById('color');
+    function renderStyleButtons(color) {
+        selector.innerHTML = '';
+        const options = styleOptions[color] || styleOptions.black;
+        options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'style-option' + (idx === 0 ? ' selected' : '');
+            btn.setAttribute('data-style', opt.value);
+            btn.textContent = opt.label;
+            btn.addEventListener('click', function() {
+                selector.querySelectorAll('.style-option').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                hiddenInput.value = this.getAttribute('data-style');
+hiddenInput.dispatchEvent(new Event('change'));
+                if(typeof updateImages === 'function'){updateImages();}
+                if(typeof updateWarning === 'function'){updateWarning();}
+            });
+            selector.appendChild(btn);
+        });
+        // Set value
+        hiddenInput.value = options[0].value;
+        if(typeof updateImages === 'function'){updateImages();}
+        if(typeof updateWarning === 'function'){updateWarning();}
+    }
+    colorSelect.addEventListener('change', function() {
+        renderStyleButtons(this.value);
+    });
+    // Initial render
+    renderStyleButtons(colorSelect.value);
+})();
+</script>
+                <div style="margin-bottom:12px;">
+                    <label style="font-weight:500;">Size:</label>
+                    <div class="size-selector" id="size-selector">
+                        <button type="button" class="size-option" data-size="S">S</button>
+                        <button type="button" class="size-option" data-size="M">M</button>
+                        <button type="button" class="size-option" data-size="L">L</button>
+                        <button type="button" class="size-option" data-size="XL">XL</button>
+                    </div>
+                    <input type="hidden" id="size" name="size" value="S">
+                </div>
+<script>
+(function(){
+    const selector = document.getElementById('size-selector');
+    const hiddenInput = document.getElementById('size');
+    selector.querySelectorAll('.size-option').forEach(btn => {
+        btn.addEventListener('click', function() {
+            selector.querySelectorAll('.size-option').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            hiddenInput.value = this.getAttribute('data-size');
+            hiddenInput.dispatchEvent(new Event('change'));
+            if(typeof updateWarning === 'function'){updateWarning();}
+        });
+    });
+    // Set default selected
+    selector.querySelector('.size-option[data-size="S"]').classList.add('selected');
+})();
+</script>
+                <div id="images" style="margin-top:16px;">
+    <img id="productImg" src="img/front black.jpg" alt="Front" style="width:280px;">
+    <div style="margin-top:12px;display:flex;justify-content:center;gap:18px;">
+        <button type="button" class="img-toggle-btn selected" id="showFront">Front</button>
+        <button type="button" class="img-toggle-btn" id="showBack">Back</button>
+    </div>
+</div>
+<script>
+(function(){
+    const productImg = document.getElementById('productImg');
+    const showFront = document.getElementById('showFront');
+    const showBack = document.getElementById('showBack');
+    let frontSrc = 'img/front black.jpg';
+    let backSrc = 'img/back grey-black.jpg';
+    let frontAlt = 'Front';
+    let backAlt = 'Back';
+    function updateImageSources() {
+        // Update sources based on color/style selection
+        const color = document.getElementById('color').value;
+        const style = document.getElementById('style').value;
+        if (color === 'red') {
+            frontSrc = 'img/front red.jpg';
+            backSrc = 'img/back red-white.jpg';
+            frontAlt = 'Front Red';
+            backAlt = 'Back White on Red';
+        } else if (style === 'grey-black') {
+            frontSrc = 'img/front black.jpg';
+            backSrc = 'img/back grey-black.jpg';
+            frontAlt = 'Front Black';
+            backAlt = 'Back Grey on Black';
+        } else if (style === 'white-black') {
+            frontSrc = 'img/front black.jpg';
+            backSrc = 'img/back black-white.jpg';
+            frontAlt = 'Front Black';
+            backAlt = 'Back White on Black';
+        }
+    }
+    function showFrontImg() {
+        updateImageSources();
+        productImg.src = frontSrc;
+        productImg.alt = frontAlt;
+        showFront.classList.add('selected');
+        showBack.classList.remove('selected');
+    }
+    function showBackImg() {
+        updateImageSources();
+        productImg.src = backSrc;
+        productImg.alt = backAlt;
+        showFront.classList.remove('selected');
+        showBack.classList.add('selected');
+    }
+    showFront.addEventListener('click', showFrontImg);
+    showBack.addEventListener('click', showBackImg);
+    document.getElementById('color').addEventListener('change', function(){
+        if (showFront.classList.contains('selected')) showFrontImg();
+        else showBackImg();
+    });
+    document.getElementById('style').addEventListener('change', function(){
+        if (showFront.classList.contains('selected')) showFrontImg();
+        else showBackImg();
+    });
+    // Default to front
+    showFrontImg();
+})();
+</script>
+                <div style="margin:16px 0;">
+                    <button class="cta-btn" onclick="addToCart()">Buy</button>
+                    <span class="price" style="font-size:1.2em;font-weight:500;margin-left:16px;">120 TND</span>
+                    <span id="stock-warning" style="display:block;margin-top:8px;color:#fe3130;font-weight:600;"></span>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function updateWarning() {
+        const stocks = JSON.parse(localStorage.getItem('stocks') || '{}');
+        const style = document.getElementById('style').value;
+        const size = document.getElementById('size').value;
+        let stock = stocks?.tshirt?.[style]?.[size] ?? 0;
+        document.getElementById('stock-warning').textContent = stock === 0 ? 'Out of stock' : (stock <= 30 ? 'Last pieces!' : '');
+    }
+    updateWarning();
+    document.getElementById('style').addEventListener('change', updateWarning);
+    document.getElementById('size').addEventListener('change', updateWarning);
+});
+</script>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 the vision</p>
+    </footer>
+    <script>
+    function updateStyles() {
+        const color = document.getElementById('color').value;
+        const styleSelect = document.getElementById('style');
+        styleSelect.innerHTML = '';
+        if (color === 'red') {
+            styleSelect.innerHTML = '<option value="white-red">White on Red</option>';
+        } else {
+            styleSelect.innerHTML = 
+                '<option value="grey-black">Grey on Black</option>' +
+                '<option value="white-black">White on Black</option>';
+        }
+        updateImages();
+    }
+    function updateImages() {
+        const color = document.getElementById('color').value;
+        const style = document.getElementById('style').value;
+        const frontImg = document.getElementById('frontImg');
+        const backImg = document.getElementById('backImg');
+        if (color === 'red') {
+            frontImg.src = 'img/front red.jpg';
+            backImg.src = 'img/back red-white.jpg';
+            frontImg.alt = 'Front Red';
+            backImg.alt = 'Back White on Red';
+        } else if (style === 'grey-black') {
+            frontImg.src = 'img/front black.jpg';
+            backImg.src = 'img/back grey-black.jpg';
+            frontImg.alt = 'Front Black';
+            backImg.alt = 'Back Grey on Black';
+        } else if (style === 'white-black') {
+            frontImg.src = 'img/front black.jpg';
+            backImg.src = 'img/back black-white.jpg';
+            frontImg.alt = 'Front Black';
+            backImg.alt = 'Back White on Black';
+        }
+    }
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateStyles();
+    });
+    </script>
+<script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

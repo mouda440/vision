@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - THE VISION</title>
+    <link rel="stylesheet" href="css/styles.css">
+
+</head>
+<body>
+    <header class="hero">
+        <img src="img/logo.jpg" alt="THE VISION Logo" class="hero-logo">
+        <h1 class="hero-title">Your Cart</h1>
+    </header>
+    <div style="text-align:center;">
+        <a href="shopping.html" class="cta-btn">Back to Shop</a>
+    </div>
+    <main>
+        <section>
+            <h2>Items in your cart</h2>
+            <div id="cart-items"></div>
+            <div id="checkout-area" style="text-align:center; margin-top:32px;">
+    <button class="cta-btn" onclick="showCheckoutForm()">Checkout</button>
+    <div id="checkout-form" style="display:none; margin-top:24px;">
+        <h3>Checkout</h3>
+        <form onsubmit="submitCheckout(event)">
+            <input type="text" id="buyer-name" placeholder="Full name" required style="margin-bottom:12px;display:block;width:260px;margin:auto;padding:10px;border-radius:8px;border:1px solid #444;background:#181818;color:#fff;">
+            <input type="text" id="buyer-number" placeholder="Phone number (8 digits)" maxlength="8" required pattern="\d{8}" style="margin-bottom:12px;display:block;width:260px;margin:auto;padding:10px;border-radius:8px;border:1px solid #444;background:#181818;color:#fff;">
+            <input type="email" id="buyer-email" placeholder="Email address" required style="margin-bottom:12px;display:block;width:260px;margin:auto;padding:10px;border-radius:8px;border:1px solid #444;background:#181818;color:#fff;">
+            <input type="text" id="buyer-address" placeholder="Full address" required style="margin-bottom:12px;display:block;width:260px;margin:auto;padding:10px;border-radius:8px;border:1px solid #444;background:#181818;color:#fff;">
+            <button type="submit" class="cta-btn" style="margin-top:12px;">Confirm Order</button>
+        </form>
+        <div id="checkout-error" style="color:#fe3130;margin-top:8px;"></div>
+    </div>
+</div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 the vision</p>
+    </footer>
+    <script>
+function renderCart() {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const container = document.getElementById('cart-items');
+    if (cart.length === 0) {
+        container.innerHTML = '<p>Your cart is empty.</p>';
+        return;
+    }
+    let total = 0;
+    let html = '<ul style="list-style:none;padding:0;">';
+    cart.forEach((item, idx) => {
+        total += Number(item.price);
+        html += `<li style="margin-bottom:16px;">
+            <strong>${item.name}</strong> - ${item.price} TND
+            <br>
+            <img src="${item.img}" alt="${item.name}" style="width:120px;">
+            <br>
+            <button class="cta-btn" onclick="removeFromCart(${idx})" style="margin-top:8px;">Remove</button>
+        </li>`;
+    });
+    html += '</ul>';
+    html += `<div style="font-size:1.2em;font-weight:600;margin-top:24px;color:#ffffff;">Total: ${total} TND</div>`;
+    container.innerHTML = html;
+}
+
+function removeFromCart(index) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    renderCart();
+}
+
+        renderCart();
+    </script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

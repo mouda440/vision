@@ -1,0 +1,24 @@
+/* Local font-face for HORIZON and INTEGRAL-HV */
+@font-face {
+    font-family: 'HORIZON';
+    src: url('../fonts/HORIZON.woff2') format('woff2'),
+         url('../fonts/HORIZON.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'HOTHOM';
+    src: url('../fonts/HOTHOM.woff2') format('woff2'),
+         url('../fonts/HOTHOM.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'INTEGRAL-HV';
+    src: url('../fonts/INTEGRAL-HV.woff2') format('woff2'),
+         url('../fonts/INTEGRAL-HV.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}

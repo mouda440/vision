@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - THE VISION</title>
+    <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+        /* New styles for fixed footer and positioning */
+        #admin-content {
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 80px; /* Space for footer + button */
+        }
+        
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 0;
+            background: #000000;
+            text-align: center;
+            z-index: 100;
+        }
+        
+        .credentials-container {
+            position: fixed;
+            bottom: 50px;
+            right: 24px;
+            z-index: 101;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-area" class="admin-login-area">
+        <div class="hero admin-hero">
+            <img src="img/logo.jpg" alt="THE VISION Logo" class="hero-logo">
+            <h1 class="hero-title">Admin Panel</h1>
+            <p class="hero-tag">Manage THE VISION with confidence.</p>
+        </div>
+        <div class="admin-login-form">
+            <h2>Admin Login</h2>
+            <input type="text" id="admin-username" placeholder="Username">
+            <input type="password" id="admin-password" placeholder="Password">
+            <button class="cta-btn" onclick="adminLogin()">Login</button>
+            <div id="login-error" class="admin-login-error"></div>
+        </div>
+    </div>
+    <div id="admin-content" style="display:none;">
+        <header class="hero admin-hero">
+            <img src="img/logo.jpg" alt="THE VISION Logo" class="hero-logo">
+            <h1 class="hero-title">Admin Panel</h1>
+            <p class="hero-tag">Manage THE VISION with confidence.</p>
+        </header>
+        <main style="padding-bottom: 60px;"> <!-- Added padding to prevent overlap -->
+            <section>
+                <h2>All Orders</h2>
+                <div id="orders-list"></div>
+            </section>
+            <section>
+                <h2>Set Stocks</h2>
+                <h3>T-shirt Stocks</h3>
+                <div id="tshirt-stock-inputs"></div>
+                <h3>Jort Stocks</h3>
+                <div id="jort-stock-inputs"></div>
+                <button class="cta-btn" onclick="setAdminStocks()">Save Stocks</button>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2025 the vision</p>
+        </footer>
+        
+        <!-- Updated credentials container -->
+        <div class="credentials-container" style="position:static; right:auto; bottom:auto; z-index:auto; margin:32px 0 0 0; text-align:center;">
+            <button class="cta-btn" onclick="showChangeCredentials()">Change Username/Password</button>
+            <div id="change-credentials-area" style="display:none; position:relative; background:#222; padding:20px; border-radius:12px; box-shadow:0 2px 8px #000; width:250px; margin:10px auto 0 auto;">
+                <h3>Change Credentials</h3>
+                <input type="text" id="new-username" placeholder="New Username" style="margin-bottom:12px;width:100%;padding:8px;border-radius:6px;border:1px solid #444;">
+                <input type="password" id="new-password" placeholder="New Password" style="margin-bottom:12px;width:100%;padding:8px;border-radius:6px;border:1px solid #444;">
+                <button class="cta-btn" onclick="changeCredentials()">Save</button>
+                <button class="cta-btn" style="background:#444;margin-left:8px;" onclick="hideChangeCredentials()">Cancel</button>
+                <div id="change-error" style="color:#fe3130;margin-top:8px;"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+    // --- Simple credential storage ---
+    function getAdminCredentials() {
+        return JSON.parse(localStorage.getItem('adminCredentials') || '{"username":"admin","password":"vision2025"}');
+    }
+    function setAdminCredentials(username, password) {
+        localStorage.setItem('adminCredentials', JSON.stringify({username, password}));
+    }
+
+    // --- Login logic ---
+    async function adminLogin() {
+        const username = document.getElementById('admin-username').value.trim();
+        const password = document.getElementById('admin-password').value.trim();
+        const creds = getAdminCredentials();
+        const errorDiv = document.getElementById('login-error');
+        errorDiv.textContent = '';
+        if (username === creds.username && password === creds.password) {
+            document.getElementById('login-area').style.display = 'none';
+            document.getElementById('admin-content').style.display = 'block';
+            renderStockInputs();
+            await loadStocksToInputs();
+            await renderOrders();
+        } else {
+            errorDiv.textContent = 'Incorrect username or password.';
+        }
+    }
+
+    // --- Change credentials logic ---
+    function showChangeCredentials() {
+        document.getElementById('change-credentials-area').style.display = 'block';
+    }
+    function hideChangeCredentials() {
+        document.getElementById('change-credentials-area').style.display = 'none';
+        document.getElementById('change-error').textContent = '';
+    }
+    function changeCredentials() {
+        const newUsername = document.getElementById('new-username').value.trim();
+        const newPassword = document.getElementById('new-password').value.trim();
+        const errorDiv = document.getElementById('change-error');
+        errorDiv.textContent = '';
+        if (newUsername.length < 3 || newPassword.length < 4) {
+            errorDiv.textContent = 'Username must be at least 3 characters and password at least 4.';
+            return;
+        }
+        setAdminCredentials(newUsername, newPassword);
+        errorDiv.style.color = "#2d89ef";
+        errorDiv.textContent = "Credentials updated!";
+        setTimeout(hideChangeCredentials, 1200);
+    }
+
+    // --- Orders and stocks logic (same as before) ---
+    async function renderOrders() {
+        const orders = await fetchOrders();
+        const container = document.getElementById('orders-list');
+        if (orders.length === 0) {
+            container.innerHTML = '<p>No orders yet.</p>';
+            return;
+        }
+        let html = '';
+        orders.forEach((order, idx) => {
+            html += `<div style="background:#222;padding:16px;margin-bottom:16px;border-radius:8px;">
+                <strong>Order #${idx+1}</strong><br>
+                <b>Date:</b> ${order.date}<br>
+                <b>Name:</b> ${order.name}<br>
+                <b>Phone:</b> ${order.number}<br>
+                <b>Email:</b> ${order.email}<br>
+                <b>Address:</b> ${order.address}<br>
+                <b>Items:</b>
+                <ul style="list-style:none;padding:0;">${order.cart.map(item => `<li>${item.name} - ${item.price} TND</li>`).join('')}</ul>
+                <button class="cta-btn" style="margin-top:12px;" onclick="deleteOrder(${idx})">Delete Order</button>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    async function deleteOrder(index) {
+        await deleteOrderAPI(index);
+        renderOrders();
+    }
+
+    // --- Stock management ---
+    const tshirtStyles = ["grey-black", "white-black", "white-red"];
+    const sizes = ["S", "M", "L", "XL"];
+
+    function renderStockInputs() {
+        let tshirtHtml = '';
+        tshirtStyles.forEach(style => {
+            tshirtHtml += `<div style="margin-bottom:8px;"><b>${style}:</b> `;
+            sizes.forEach(size => {
+                tshirtHtml += `${size}: <input type="number" min="0" id="stock-tshirt-${style}-${size}" style="width:40px;"> `;
+            });
+            tshirtHtml += '</div>';
+        });
+        document.getElementById('tshirt-stock-inputs').innerHTML = tshirtHtml;
+
+        let jortHtml = '<div>';
+        sizes.forEach(size => {
+            jortHtml += `${size}: <input type="number" min="0" id="stock-jort-${size}" style="width:40px;"> `;
+        });
+        jortHtml += '</div>';
+        document.getElementById('jort-stock-inputs').innerHTML = jortHtml;
+    }
+
+    async function setAdminStocks() {
+        let stocks = { tshirt: {}, jort: {} };
+        tshirtStyles.forEach(style => {
+            stocks.tshirt[style] = {};
+            sizes.forEach(size => {
+                stocks.tshirt[style][size] = parseInt(document.getElementById(`stock-tshirt-${style}-${size}`).value, 10) || 0;
+            });
+        });
+        stocks.jort = {};
+        sizes.forEach(size => {
+            stocks.jort[size] = parseInt(document.getElementById(`stock-jort-${size}`).value, 10) || 0;
+        });
+        await setStocksAPI(stocks);
+        alert('Stocks updated!');
+    }
+
+    async function loadStocksToInputs() {
+        const stocks = await fetchStocks();
+        tshirtStyles.forEach(style => {
+            sizes.forEach(size => {
+                document.getElementById(`stock-tshirt-${style}-${size}`).value = stocks?.tshirt?.[style]?.[size] ?? 0;
+            });
+        });
+        sizes.forEach(size => {
+            document.getElementById(`stock-jort-${size}`).value = stocks?.jort?.[size] ?? 0;
+        });
+    }
+    </script>
+    <script src="js/api.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping - THE VISION</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="hero">
+        <img src="img/logo.jpg" alt="THE VISION Logo" class="hero-logo">
+        <h1 class="hero-title">Shopping</h1>
+        <div class="hero-cart-link">
+            <a href="cart.html" class="cta-btn">Cart</a>
+        </div>
+    </header>
+    <div style="text-align:center;">
+        <a href="index.html" class="cta-btn">Back to Home</a>
+    </div>
+    <main>
+        <section>
+            <h2>Our Products</h2>
+            <div class="product-list" style="display:flex;justify-content:center;gap:32px;flex-wrap:wrap;">
+                <div class="product-card" style="background:#fafbfc;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(45,137,239,0.05);text-align:center;">
+                    <img src="img/front black.jpg" alt="T-shirt" style="width:120px;height:auto;margin-bottom:12px;">
+                    <h3 class="product-title-black">T-shirt</h3>
+                    <div style="margin:16px 0;">
+                        <a href="tshirt.html" class="cta-btn black-btn">View T-shirt</a>
+                    </div>
+                </div>
+                <div class="product-card" style="background:#fafbfc;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(45,137,239,0.05);text-align:center;">
+                    <img src="img/jort back.jpg" alt="Jort" style="width:120px;height:auto;margin-bottom:12px;">
+                    <h3 class="product-title-black">Jort</h3>
+                    <div style="margin:16px 0;">
+                        <a href="jort.html" class="cta-btn black-btn">View Jort</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 the vision</p>
+    </footer>
+    <script>
+    function updateStyles() {
+        const color = document.getElementById('color').value;
+        const styleSelect = document.getElementById('style');
+        styleSelect.innerHTML = '';
+        if (color === 'red') {
+            styleSelect.innerHTML = '<option value="white-red">White on Red</option>';
+        } else {
+            styleSelect.innerHTML = 
+                '<option value="grey-black">Grey on Black</option>' +
+                '<option value="white-black">White on Black</option>';
+        }
+        updateImages();
+    }
+    function updateImages() {
+        const color = document.getElementById('color').value;
+        const style = document.getElementById('style').value;
+        const frontImg = document.getElementById('frontImg');
+        const backImg = document.getElementById('backImg');
+        if (color === 'red') {
+            frontImg.src = 'img/front red.jpg';
+            backImg.src = 'img/back red-white.jpg';
+            frontImg.alt = 'Front Red';
+            backImg.alt = 'Back White on Red';
+        } else if (style === 'grey-black') {
+            frontImg.src = 'img/front black.jpg';
+            backImg.src = 'img/back grey-black.jpg';
+            frontImg.alt = 'Front Black';
+            backImg.alt = 'Back Grey on Black';
+        } else if (style === 'white-black') {
+            frontImg.src = 'img/front black.jpg';
+            backImg.src = 'img/back black-white.jpg';
+            frontImg.alt = 'Front Black';
+            backImg.alt = 'Back White on Black';
+        }
+    }
+    // Initialize on page load
+    updateStyles();
+    </script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jort - THE VISION</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="hero">
+        <img src="img/logo.jpg" alt="THE VISION Logo" class="hero-logo">
+        <h1 class="hero-title">Jort</h1>
+        <div class="hero-cart-link">
+            <a href="cart.html" class="cta-btn">Cart</a>
+        </div>
+    </header>
+    <main style="margin-bottom:60px;">
+        <section>
+            <div style="text-align:center;margin:38px 0 38px 0;">
+                <a href="shopping.html" class="cta-btn">Back to Shop</a>
+            </div>
+            <div class="product" style="text-align:center;background:#181818;color:#fff;padding:38px 0 32px 0;border-radius:18px;max-width:480px;margin:auto;box-shadow:0 2px 18px #0002;">
+                <h3>Jort</h3>
+                <div style="margin-bottom:16px;">
+                    <label style="font-weight:500;">Size:</label>
+                    <div class="size-selector" id="size-selector">
+                        <button type="button" class="size-option" data-size="S">S</button>
+                        <button type="button" class="size-option" data-size="M">M</button>
+                        <button type="button" class="size-option" data-size="L">L</button>
+                        <button type="button" class="size-option" data-size="XL">XL</button>
+                    </div>
+                    <input type="hidden" id="size" name="size" value="S">
+                    <script>
+                    // Size selector logic for jort
+                    (function(){
+                        const selector = document.getElementById('size-selector');
+                        const hiddenInput = document.getElementById('size');
+                        selector.querySelectorAll('.size-option').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                selector.querySelectorAll('.size-option').forEach(b => b.classList.remove('selected'));
+                                this.classList.add('selected');
+                                hiddenInput.value = this.getAttribute('data-size');
+                                // Update warning for stock
+                                if(typeof updateWarning === 'function'){updateWarning();}
+                            });
+                        });
+                        // Set default selected
+                        selector.querySelector('.size-option[data-size="S"]').classList.add('selected');
+                    })();
+                    </script>
+                </div>
+                <img id="productImg" src="img/jort back.jpg" alt="Back" style="width:280px;max-width:100%;margin-bottom:12px;">
+<div style="margin-top:12px;display:flex;justify-content:center;gap:18px;">
+    <button type="button" class="img-toggle-btn" id="showFront">Front</button>
+    <button type="button" class="img-toggle-btn selected" id="showBack">Back</button>
+</div>
+<script>
+(function(){
+    const productImg = document.getElementById('productImg');
+    const showFront = document.getElementById('showFront');
+    const showBack = document.getElementById('showBack');
+    const frontSrc = 'img/jort front.jpg';
+    const backSrc = 'img/jort back.jpg';
+    function showFrontImg() {
+        productImg.src = frontSrc;
+        productImg.alt = 'Front';
+        showFront.classList.add('selected');
+        showBack.classList.remove('selected');
+    }
+    function showBackImg() {
+        productImg.src = backSrc;
+        productImg.alt = 'Back';
+        showFront.classList.remove('selected');
+        showBack.classList.add('selected');
+    }
+    showFront.addEventListener('click', showFrontImg);
+    showBack.addEventListener('click', showBackImg);
+    // Default to back
+    showBackImg();
+})();
+</script>
+                <div style="margin:16px 0;">
+                   <button class="cta-btn" onclick="addToCart()">Buy</button>
+                     <span class="price" style="font-size:1.2em;font-weight:500;margin-left:16px;">70 TND</span>
+                     <span id="stock-warning" style="display:block;margin-top:8px;color:#fe3130;font-weight:600;"></span>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function updateWarning() {
+        const stocks = JSON.parse(localStorage.getItem('stocks') || '{}');
+        const size = document.getElementById('size').value;
+        let stock = stocks?.jort?.[size] ?? 0;
+        document.getElementById('stock-warning').textContent = stock === 0 ? 'Out of stock' : (stock <= 30 ? 'Last pieces!' : '');
+    }
+    updateWarning();
+    document.getElementById('size').addEventListener('change', updateWarning);
+});
+</script>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 the vision</p>
+    </footer>
+<script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
