@@ -174,8 +174,13 @@ hiddenInput.dispatchEvent(new Event('change'));
                     <span id="stock-warning" style="display:block;margin-top:8px;color:#fe3130;font-weight:600;"></span>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    function updateWarning() {
-        const stocks = JSON.parse(localStorage.getItem('stocks') || '{}');
+    async function updateWarning() {
+        let stocks = {};
+        if (window.fetchStocks) {
+            stocks = await window.fetchStocks();
+        } else if (window.api && window.api.fetchStocks) {
+            stocks = await window.api.fetchStocks();
+        }
         const style = document.getElementById('style').value;
         const size = document.getElementById('size').value;
         let stock = stocks?.tshirt?.[style]?.[size] ?? 0;
