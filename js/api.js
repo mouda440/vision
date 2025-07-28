@@ -20,6 +20,13 @@ async function fetchOrders() {
     const res = await fetch(`${API_BASE}/orders`);
     return await res.json();
 }
+
+// Expose API functions to window for global access
+window.fetchStocks = fetchStocks;
+window.setStocksAPI = setStocksAPI;
+window.fetchOrders = fetchOrders;
+window.addOrderAPI = addOrderAPI;
+window.deleteOrderAPI = deleteOrderAPI;
 async function addOrderAPI(order) {
     const res = await fetch(`${API_BASE}/orders`, {
         method: 'POST',

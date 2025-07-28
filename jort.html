@@ -31,24 +31,7 @@
                         <button type="button" class="size-option" data-size="XL">XL</button>
                     </div>
                     <input type="hidden" id="size" name="size" value="S">
-                    <script>
-                    // Size selector logic for jort
-                    (function(){
-                        const selector = document.getElementById('size-selector');
-                        const hiddenInput = document.getElementById('size');
-                        selector.querySelectorAll('.size-option').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                selector.querySelectorAll('.size-option').forEach(b => b.classList.remove('selected'));
-                                this.classList.add('selected');
-                                hiddenInput.value = this.getAttribute('data-size');
-                                // Update warning for stock
-                                if(typeof updateWarning === 'function'){updateWarning();}
-                            });
-                        });
-                        // Set default selected
-                        selector.querySelector('.size-option[data-size="S"]').classList.add('selected');
-                    })();
-                    </script>
+                    
                 </div>
                 <img id="productImg" src="img/jort back.jpg" alt="Back" style="width:280px;max-width:100%;margin-bottom:12px;">
 <div style="margin-top:12px;display:flex;justify-content:center;gap:18px;">
@@ -86,6 +69,9 @@
                      <span id="stock-warning" style="display:block;margin-top:8px;color:#fe3130;font-weight:600;"></span>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Size selector logic for jort
+    const selector = document.getElementById('size-selector');
+    const hiddenInput = document.getElementById('size');
     async function updateWarning() {
         let stocks = {};
         if (window.fetchStocks) {
@@ -93,12 +79,21 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (window.api && window.api.fetchStocks) {
             stocks = await window.api.fetchStocks();
         }
-        const size = document.getElementById('size').value;
+        const size = hiddenInput.value;
         let stock = stocks?.jort?.[size] ?? 0;
         document.getElementById('stock-warning').textContent = stock === 0 ? 'Out of stock' : (stock <= 30 ? 'Last pieces!' : '');
     }
+    selector.querySelectorAll('.size-option').forEach(btn => {
+        btn.addEventListener('click', function() {
+            selector.querySelectorAll('.size-option').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            hiddenInput.value = this.getAttribute('data-size');
+            updateWarning();
+        });
+    });
+    // Set default selected
+    selector.querySelector('.size-option[data-size="S"]').classList.add('selected');
     updateWarning();
-    document.getElementById('size').addEventListener('change', updateWarning);
 });
 </script>
                 </div>
