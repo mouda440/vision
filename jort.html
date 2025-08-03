@@ -20,8 +20,8 @@
             <div style="text-align:center;margin:38px 0 38px 0;">
                 <a href="shopping.html" class="cta-btn">Back to Shop</a>
             </div>
-            <div class="product" style="text-align:center;background:#181818;color:#fff;padding:38px 0 32px 0;border-radius:18px;max-width:480px;margin:auto;box-shadow:0 2px 18px #0002;">
-                <h3>Jort</h3>
+            <div class="product" id="jort-product-container" style="text-align:center;background:#181818;color:#fff;padding:38px 0 32px 0;border-radius:18px;max-width:480px;margin:auto;box-shadow:0 2px 18px #0002;">
+                <h3 id="product-title">Jort</h3>
                 <div style="margin-bottom:16px;">
                     <label style="font-weight:500;">Size:</label>
                     <div class="size-selector" id="size-selector">
@@ -34,40 +34,15 @@
                     
                 </div>
                 <img id="productImg" src="img/jort back.jpg" alt="Back" style="width:280px;max-width:100%;margin-bottom:12px;">
-<div style="margin-top:12px;display:flex;justify-content:center;gap:18px;">
-    <button type="button" class="img-toggle-btn" id="showFront">Front</button>
-    <button type="button" class="img-toggle-btn selected" id="showBack">Back</button>
-</div>
-<script>
-(function(){
-    const productImg = document.getElementById('productImg');
-    const showFront = document.getElementById('showFront');
-    const showBack = document.getElementById('showBack');
-    const frontSrc = 'img/jort front.jpg';
-    const backSrc = 'img/jort back.jpg';
-    function showFrontImg() {
-        productImg.src = frontSrc;
-        productImg.alt = 'Front';
-        showFront.classList.add('selected');
-        showBack.classList.remove('selected');
-    }
-    function showBackImg() {
-        productImg.src = backSrc;
-        productImg.alt = 'Back';
-        showFront.classList.remove('selected');
-        showBack.classList.add('selected');
-    }
-    showFront.addEventListener('click', showFrontImg);
-    showBack.addEventListener('click', showBackImg);
-    // Default to back
-    showBackImg();
-})();
-</script>
+                <div style="margin-top:12px;display:flex;justify-content:center;gap:18px;">
+                    <button type="button" class="img-toggle-btn" id="showFront">Front</button>
+                    <button type="button" class="img-toggle-btn selected" id="showBack">Back</button>
+                </div>
                 <div style="margin:16px 0;">
                    <button class="cta-btn" onclick="addToCart()">Buy</button>
-                     <span class="price" style="font-size:1.2em;font-weight:500;margin-left:16px;">70 TND</span>
+                     <span class="price" id="product-price" style="font-size:1.2em;font-weight:500;margin-left:16px;">70 TND</span>
                      <span id="stock-warning" style="display:block;margin-top:8px;color:#fe3130;font-weight:600;"></span>
-<script>
+                    <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Size selector logic for jort
     const selector = document.getElementById('size-selector');
@@ -105,6 +80,55 @@ document.addEventListener('DOMContentLoaded', function() {
     </footer>
 <script src="js/main.js"></script>
     <script src="js/api.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', async function() {
+    let products = [];
+    try {
+        products = await fetchProducts();
+    } catch (e) {}
+    const jort = products.find(p => p.type === 'jort');
+    if (jort) {
+        document.getElementById('product-title').textContent = jort.name || 'Jort';
+        document.getElementById('product-price').textContent = (jort.price ? jort.price + ' TND' : '70 TND');
+        function fixImgPath(url, fallback) {
+            if (!url) return fallback;
+            if (/^https?:\/\//.test(url)) return url;
+            if (url.startsWith('img/')) return url;
+            return 'img/' + url.replace(/^\.?\/*/, '');
+        }
+        const frontImg = fixImgPath(jort.images?.find(img => img.name.toLowerCase().includes('front'))?.url, 'img/jort front.jpg');
+        const backImg = fixImgPath(jort.images?.find(img => img.name.toLowerCase().includes('back'))?.url, 'img/jort back.jpg');
+        (function(){
+            const productImg = document.getElementById('productImg');
+            const showFront = document.getElementById('showFront');
+            const showBack = document.getElementById('showBack');
+            showFront.addEventListener('click', function() {
+                productImg.src = frontImg;
+                productImg.alt = 'Front';
+                productImg.onerror = function() { this.src = 'img/jort front.jpg'; };
+                showFront.classList.add('selected');
+                showBack.classList.remove('selected');
+            });
+            showBack.addEventListener('click', function() {
+                productImg.src = backImg;
+                productImg.alt = 'Back';
+                productImg.onerror = function() { this.src = 'img/jort back.jpg'; };
+                showFront.classList.remove('selected');
+                showBack.classList.add('selected');
+            });
+            productImg.src = backImg;
+            productImg.alt = 'Back';
+            productImg.onerror = function() { this.src = 'img/jort back.jpg'; };
+            showFront.classList.remove('selected');
+            showBack.classList.add('selected');
+        })();
+        window.fetchStocks = async function() {
+            if (jort.stock) return { jort: jort.stock };
+            return await window.fetchStocks();
+        };
+    }
+});
+</script>
     <script src="js/main.js"></script>
 </body>
 </html>

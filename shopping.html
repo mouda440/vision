@@ -21,21 +21,8 @@
     <main>
         <section>
             <h2>Our Products</h2>
-            <div class="product-list" style="display:flex;justify-content:center;gap:32px;flex-wrap:wrap;">
-                <div class="product-card" style="background:#fafbfc;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(45,137,239,0.05);text-align:center;">
-                    <img src="img/front black.jpg" alt="T-shirt" style="width:120px;height:auto;margin-bottom:12px;">
-                    <h3 class="product-title-black">T-shirt</h3>
-                    <div style="margin:16px 0;">
-                        <a href="tshirt.html" class="cta-btn black-btn">View T-shirt</a>
-                    </div>
-                </div>
-                <div class="product-card" style="background:#fafbfc;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(45,137,239,0.05);text-align:center;">
-                    <img src="img/jort back.jpg" alt="Jort" style="width:120px;height:auto;margin-bottom:12px;">
-                    <h3 class="product-title-black">Jort</h3>
-                    <div style="margin:16px 0;">
-                        <a href="jort.html" class="cta-btn black-btn">View Jort</a>
-                    </div>
-                </div>
+            <div class="product-list" id="product-list" style="display:flex;justify-content:center;gap:32px;flex-wrap:wrap;">
+                <!-- Products will be rendered here -->
             </div>
         </section>
     </main>
@@ -82,6 +69,49 @@
     updateStyles();
     </script>
     <script src="js/api.js"></script>
+    <script>
+    async function renderProducts() {
+        const container = document.getElementById('product-list');
+        container.innerHTML = '<p>Loading...</p>';
+        let products = [];
+        try {
+            products = await fetchProducts();
+        } catch (e) {
+            container.innerHTML = '<p>Failed to load products.</p>';
+            return;
+        }
+        if (!products || products.length === 0) {
+            container.innerHTML = '<p>No products available.</p>';
+            return;
+        }
+        let html = '';
+        products.forEach(product => {
+            let img;
+            if (product.type === 'tshirt') {
+                img = 'img/front black.jpg';
+            } else if (product.type === 'jort') {
+                img = 'img/jort back.jpg';
+            } else {
+                img = (product.images && product.images[0] && product.images[0].url) ? product.images[0].url : 'img/logo.jpg';
+                if (!/^https?:\/\//.test(img) && !img.startsWith('img/')) {
+                    img = 'img/' + img.replace(/^\.?\/*/, '');
+                }
+            }
+            html += `
+                <div class="product-card" style="background:#fafbfc;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(45,137,239,0.05);text-align:center;">
+                    <img src="${img}" alt="${product.name}" style="width:120px;height:auto;margin-bottom:12px;" onerror="this.src='img/logo.jpg'">
+                    <h3 class="product-title-black">${product.name}</h3>
+                    <div style="margin:16px 0;">
+                        <a href="${product.type === 'tshirt' ? 'tshirt.html' : (product.type === 'jort' ? 'jort.html' : '#')}" class="cta-btn black-btn">View ${product.name}</a>
+                    </div>
+                    <div style="font-size:1.1em;color:#181818;font-weight:600;">${product.price} TND</div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+    document.addEventListener('DOMContentLoaded', renderProducts);
+    </script>
     <script src="js/main.js"></script>
 </body>
 </html>

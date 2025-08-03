@@ -3,20 +3,36 @@
 
 // Example for T-shirt
 async function addToCart() {
+    // Fetch latest products and stocks
+    const products = await fetchProducts();
     const stocks = await getStocks();
+
     if (document.querySelector('h1')?.textContent.includes('T-shirt')) {
         const color = document.getElementById('color').value;
         const style = document.getElementById('style').value;
         const size = document.getElementById('size').value;
         let img = 'img/front black.jpg';
         if (color === 'red') img = 'img/front red.jpg';
-        if ((stocks.tshirt?.[style]?.[size] ?? 0) <= 0) {
+
+        // Find latest product price for T-shirt
+        const tshirtProduct = products.find(p => p.type === 'tshirt');
+        const price = tshirtProduct?.price ?? 120;
+
+        // Stock check (support both backend and product stock structure)
+        let stock = 0;
+        if (stocks.tshirt?.[style]?.[size] !== undefined) {
+            stock = stocks.tshirt[style][size];
+        } else if (tshirtProduct?.stock?.[size] !== undefined) {
+            stock = tshirtProduct.stock[size];
+        }
+        if (stock <= 0) {
             alert('Out of stock!');
             return;
         }
+
         const item = {
             name: `T-shirt (${color}, ${style}, Size: ${size})`,
-            price: 120,
+            price: price,
             img: img,
             type: 'tshirt',
             style,
@@ -28,13 +44,26 @@ async function addToCart() {
         window.location.href = 'cart.html';
     } else if (document.querySelector('h1')?.textContent.includes('Jort')) {
         const size = document.getElementById('size').value;
-        if ((stocks.jort?.[size] ?? 0) <= 0) {
+
+        // Find latest product price for Jort
+        const jortProduct = products.find(p => p.type === 'jort');
+        const price = jortProduct?.price ?? 70;
+
+        // Stock check
+        let stock = 0;
+        if (stocks.jort?.[size] !== undefined) {
+            stock = stocks.jort[size];
+        } else if (jortProduct?.stock?.[size] !== undefined) {
+            stock = jortProduct.stock[size];
+        }
+        if (stock <= 0) {
             alert('Out of stock!');
             return;
         }
+
         const item = {
             name: `Jort (Size: ${size})`,
-            price: 70,
+            price: price,
             img: 'img/jort back.jpg',
             type: 'jort',
             size

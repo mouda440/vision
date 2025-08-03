@@ -5,32 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - THE VISION</title>
     <link rel="stylesheet" href="css/styles.css">
-
     <style>
-        /* New styles for fixed footer and positioning */
-        #admin-content {
-            position: relative;
-            min-height: 100vh;
-            padding-bottom: 80px; /* Space for footer + button */
-        }
-        
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 10px 0;
-            background: #000000;
-            text-align: center;
-            z-index: 100;
-        }
-        
-        .credentials-container {
-            position: fixed;
-            bottom: 50px;
-            right: 24px;
-            z-index: 101;
-        }
+        #admin-content { position: relative; min-height: 100vh; padding-bottom: 180px; }
+        footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 10px 0; background: #000; text-align: center; z-index: 100; height: 60px; }
+        .credentials-container { margin: 32px 0 0 0; text-align: center; }
+        main { padding-bottom: 60px; }
+        #product-form-container { background: #222; padding: 20px; border-radius: 12px; margin-top: 20px; display: none; }
+        @media (max-width: 768px) { #admin-content { padding-bottom: 220px; } footer { height: 80px; } }
     </style>
 </head>
 <body>
@@ -54,7 +35,7 @@
             <h1 class="hero-title">Admin Panel</h1>
             <p class="hero-tag">Manage THE VISION with confidence.</p>
         </header>
-        <main style="padding-bottom: 60px;"> <!-- Added padding to prevent overlap -->
+        <main>
             <section>
                 <h2>All Orders</h2>
                 <div id="orders-list"></div>
@@ -67,34 +48,222 @@
                 <div id="jort-stock-inputs"></div>
                 <button class="cta-btn" onclick="setAdminStocks()">Save Stocks</button>
             </section>
+            <section>
+                <h2>Manage Products</h2>
+                <button class="cta-btn" onclick="showAddProductForm()">Add New Product</button>
+                <div id="products-list" style="margin-top: 20px;"></div>
+                <div id="product-form-container">
+                    <h3 id="product-form-title">Add Product</h3>
+                    <input type="hidden" id="product-id">
+                    <div style="margin-bottom:15px;">
+                        <label>Product Name</label>
+                        <input type="text" id="product-name" style="width:100%; padding:8px; border-radius:6px;">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label>Price (TND)</label>
+                        <input type="number" id="product-price" style="width:100%; padding:8px; border-radius:6px;">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label>Type</label>
+                        <input type="text" id="product-type" style="width:100%; padding:8px; border-radius:6px;" placeholder="Type (e.g. tshirt, jort, etc)">
+                    </div>
+                    <h4>Images</h4>
+                    <div id="product-images" style="margin-bottom:20px;"></div>
+                    <button type="button" class="cta-btn" onclick="addImageField()">Add Image</button>
+                    <h4>Stock Per Size</h4>
+                    <div id="stock-configuration"></div>
+                    <div style="margin-top:20px; display:flex; gap:10px;">
+                        <button class="cta-btn" onclick="saveProduct()">Save Product</button>
+                        <button class="cta-btn" style="background:#444;" onclick="cancelProductEdit()">Cancel</button>
+                    </div>
+                </div>
+            </section>
+            <div class="credentials-container">
+                <button class="cta-btn" onclick="showChangeCredentials()">Change Username/Password</button>
+                <div id="change-credentials-area" style="display:none; background:#222; padding:20px; border-radius:12px; width:250px; margin:10px auto 0 auto;">
+                    <h3>Change Credentials</h3>
+                    <input type="text" id="new-username" placeholder="New Username" style="margin-bottom:12px;width:100%;padding:8px;border-radius:6px;border:1px solid #444;">
+                    <input type="password" id="new-password" placeholder="New Password" style="margin-bottom:12px;width:100%;padding:8px;border-radius:6px;border:1px solid #444;">
+                    <button class="cta-btn" onclick="changeCredentials()">Save</button>
+                    <button class="cta-btn" style="background:#444;margin-left:8px;" onclick="hideChangeCredentials()">Cancel</button>
+                    <div id="change-error" style="color:#fe3130;margin-top:8px;"></div>
+                </div>
+            </div>
         </main>
         <footer>
-            <p>&copy; 2025 the vision</p>
-        </footer>
-        
-        <!-- Updated credentials container -->
-        <div class="credentials-container" style="position:static; right:auto; bottom:auto; z-index:auto; margin:32px 0 0 0; text-align:center;">
-            <button class="cta-btn" onclick="showChangeCredentials()">Change Username/Password</button>
-            <div id="change-credentials-area" style="display:none; position:relative; background:#222; padding:20px; border-radius:12px; box-shadow:0 2px 8px #000; width:250px; margin:10px auto 0 auto;">
-                <h3>Change Credentials</h3>
-                <input type="text" id="new-username" placeholder="New Username" style="margin-bottom:12px;width:100%;padding:8px;border-radius:6px;border:1px solid #444;">
-                <input type="password" id="new-password" placeholder="New Password" style="margin-bottom:12px;width:100%;padding:8px;border-radius:6px;border:1px solid #444;">
-                <button class="cta-btn" onclick="changeCredentials()">Save</button>
-                <button class="cta-btn" style="background:#444;margin-left:8px;" onclick="hideChangeCredentials()">Cancel</button>
-                <div id="change-error" style="color:#fe3130;margin-top:8px;"></div>
+            <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                <p style="margin: 0;">&copy; 2025 the vision</p>
             </div>
-        </div>
+        </footer>
     </div>
+    <script src="js/api.js"></script>
     <script>
-    // --- Simple credential storage ---
+    const defaultSizes = ['S', 'M', 'L', 'XL'];
+    // --- Product Management ---
+    async function renderProducts() {
+        const products = await fetchProducts();
+        const container = document.getElementById('products-list');
+        if (!products || products.length === 0) {
+            container.innerHTML = '<p>No products found</p>';
+            return;
+        }
+        let html = '';
+        products.forEach(product => {
+            html += `
+            <div class="product-item" style="background:#333; padding:15px; margin-bottom:15px; border-radius:8px;">
+                <h4>${product.name} (${product.type}) - ${product.price} TND</h4>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="cta-btn" onclick="editProduct('${product.id}')">Edit</button>
+                    <button class="cta-btn" style="background:#fe3130;" onclick="deleteProduct('${product.id}')">Delete</button>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+    function addImageField(name = '', url = '') {
+        const container = document.getElementById('product-images');
+        const index = container.children.length;
+        const html = `
+        <div class="image-field" style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
+            <input type="text" placeholder="Image Name" value="${name}" style="flex:1; padding:8px; border-radius:6px;" id="image-name-${index}">
+            <input type="text" placeholder="Image URL" value="${url}" style="flex:2; padding:8px; border-radius:6px;" id="image-url-${index}">
+            <button class="cta-btn" style="background:#fe3130; padding:5px 10px;" onclick="this.parentElement.remove()">Remove</button>
+        </div>`;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+    function showAddProductForm() {
+        document.getElementById('product-form-title').textContent = 'Add Product';
+        document.getElementById('product-id').value = '';
+        document.getElementById('product-name').value = '';
+        document.getElementById('product-price').value = '';
+        document.getElementById('product-type').value = '';
+        document.getElementById('product-images').innerHTML = '';
+        addImageField();
+        document.getElementById('stock-configuration').innerHTML = generateStockForm({});
+        document.getElementById('product-form-container').style.display = 'block';
+    }
+    function cancelProductEdit() {
+        document.getElementById('product-form-container').style.display = 'none';
+        document.getElementById('product-id').value = '';
+        document.getElementById('product-images').innerHTML = '';
+        document.getElementById('stock-configuration').innerHTML = '';
+    }
+    async function editProduct(id) {
+        const products = await fetchProducts();
+        const product = products.find(p => p.id === id);
+        if (!product) {
+            alert('Product not found.');
+            return;
+        }
+        document.getElementById('product-form-title').textContent = 'Edit Product';
+        document.getElementById('product-id').value = product.id;
+        document.getElementById('product-name').value = product.name;
+        document.getElementById('product-price').value = product.price;
+        document.getElementById('product-type').value = product.type;
+        const imagesContainer = document.getElementById('product-images');
+        imagesContainer.innerHTML = '';
+        (product.images || []).forEach(img => addImageField(img.name, img.url));
+        if ((product.images || []).length === 0) addImageField();
+        document.getElementById('stock-configuration').innerHTML = generateStockForm(product);
+        document.getElementById('product-form-container').style.display = 'block';
+    }
+    function generateStockForm(product) {
+        let html = '';
+        defaultSizes.forEach(size => {
+            // Support both flat and style-based stock
+            let qty = 0;
+            if (product.stock) {
+                if (typeof product.stock[size] === 'number') {
+                    qty = product.stock[size];
+                } else if (typeof product.stock['grey-black'] === 'object') {
+                    qty = product.stock['grey-black'][size] || 0;
+                }
+            }
+            html += `
+            <div style="display:inline-block; margin-right:15px;">
+                ${size}: <input type="number" min="0" value="${qty}" style="width:60px; padding:5px;" id="stock-size-${size}">
+            </div>`;
+        });
+        return html;
+    }
+    async function saveProduct() {
+        const id = document.getElementById('product-id').value;
+        const name = document.getElementById('product-name').value.trim();
+        const price = parseFloat(document.getElementById('product-price').value);
+        const type = document.getElementById('product-type').value.trim();
+        const images = [];
+        document.querySelectorAll('#product-images .image-field').forEach(field => {
+            const imgName = field.querySelector('input[placeholder="Image Name"]').value;
+            const imgUrl = field.querySelector('input[placeholder="Image URL"]').value;
+            if (imgName && imgUrl) images.push({ name: imgName, url: imgUrl });
+        });
+        let stock = {};
+        defaultSizes.forEach(size => {
+            stock[size] = parseInt(document.getElementById(`stock-size-${size}`).value) || 0;
+        });
+        const product = { name, price, type, images, stock };
+        if (id) product.id = id;
+        const result = await saveProductAPI(product);
+        if (!result.success) {
+            alert(result.error || 'Failed to save product.');
+            return;
+        }
+        if (!id && result.id) product.id = result.id; // Use backend id for new product
+
+        // --- Update global stocks structure if type is tshirt or jort ---
+        let stocks = await fetchStocks();
+        if (type === 'tshirt') {
+            // Default to "grey-black" style for admin product edit
+            if (!stocks.tshirt) stocks.tshirt = {};
+            stocks.tshirt["grey-black"] = { ...stock };
+            // Optionally update other styles if needed
+        } else if (type === 'jort') {
+            stocks.jort = { ...stock };
+        }
+        await setStocksAPI(stocks);
+        // --- End stocks update ---
+
+        document.getElementById('product-form-container').style.display = 'none';
+        renderProducts();
+    }
+    async function deleteProduct(id) {
+        if (confirm('Are you sure you want to delete this product?')) {
+            const result = await deleteProductAPI(id);
+            if (!result.success) {
+                alert(result.error || 'Failed to delete product.');
+                return;
+            }
+            renderProducts();
+        }
+    }
+    // --- API functions ---
+    async function fetchProducts() {
+        try { const res = await fetch(`${API_BASE}/products`); return await res.json(); }
+        catch (e) { console.error('Error fetching products:', e); return []; }
+    }
+    async function saveProductAPI(product) {
+        try {
+            const res = await fetch(`${API_BASE}/products`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(product)
+            });
+            return await res.json();
+        } catch (e) { console.error('Error saving product:', e); return { success: false }; }
+    }
+    async function deleteProductAPI(id) {
+        try {
+            const res = await fetch(`${API_BASE}/products/${id}`, { method: 'DELETE' });
+            return await res.json();
+        } catch (e) { console.error('Error deleting product:', e); return { success: false }; }
+    }
+    // --- Credentials ---
     function getAdminCredentials() {
         return JSON.parse(localStorage.getItem('adminCredentials') || '{"username":"admin","password":"vision2025"}');
     }
     function setAdminCredentials(username, password) {
         localStorage.setItem('adminCredentials', JSON.stringify({username, password}));
     }
-
-    // --- Login logic ---
     async function adminLogin() {
         const username = document.getElementById('admin-username').value.trim();
         const password = document.getElementById('admin-password').value.trim();
@@ -107,12 +276,11 @@
             renderStockInputs();
             await loadStocksToInputs();
             await renderOrders();
+            await renderProducts();
         } else {
             errorDiv.textContent = 'Incorrect username or password.';
         }
     }
-
-    // --- Change credentials logic ---
     function showChangeCredentials() {
         document.getElementById('change-credentials-area').style.display = 'block';
     }
@@ -134,12 +302,11 @@
         errorDiv.textContent = "Credentials updated!";
         setTimeout(hideChangeCredentials, 1200);
     }
-
-    // --- Orders and stocks logic (same as before) ---
+    // --- Orders and stocks logic ---
     async function renderOrders() {
         const orders = await fetchOrders();
         const container = document.getElementById('orders-list');
-        if (orders.length === 0) {
+        if (!orders || orders.length === 0) {
             container.innerHTML = '<p>No orders yet.</p>';
             return;
         }
@@ -159,16 +326,13 @@
         });
         container.innerHTML = html;
     }
-
     async function deleteOrder(index) {
         await deleteOrderAPI(index);
         renderOrders();
     }
-
     // --- Stock management ---
     const tshirtStyles = ["grey-black", "white-black", "white-red"];
     const sizes = ["S", "M", "L", "XL"];
-
     function renderStockInputs() {
         let tshirtHtml = '';
         tshirtStyles.forEach(style => {
@@ -179,7 +343,6 @@
             tshirtHtml += '</div>';
         });
         document.getElementById('tshirt-stock-inputs').innerHTML = tshirtHtml;
-
         let jortHtml = '<div>';
         sizes.forEach(size => {
             jortHtml += `${size}: <input type="number" min="0" id="stock-jort-${size}" style="width:40px;"> `;
@@ -187,7 +350,6 @@
         jortHtml += '</div>';
         document.getElementById('jort-stock-inputs').innerHTML = jortHtml;
     }
-
     async function setAdminStocks() {
         let stocks = { tshirt: {}, jort: {} };
         tshirtStyles.forEach(style => {
@@ -203,7 +365,6 @@
         await setStocksAPI(stocks);
         alert('Stocks updated!');
     }
-
     async function loadStocksToInputs() {
         const stocks = await fetchStocks();
         tshirtStyles.forEach(style => {
@@ -216,6 +377,5 @@
         });
     }
     </script>
-    <script src="js/api.js"></script>
 </body>
 </html>

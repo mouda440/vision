@@ -360,6 +360,19 @@ nav a:hover {
     }
 }
 
+@media (max-width: 768px) {
+    #admin-content {
+        padding-bottom: 220px; /* More space on mobile */
+    }
+    
+    .credentials-container {
+        margin: 20px 0;
+    }
+    
+    footer {
+        height: 80px; /* Taller footer on mobile */
+    }
+}
 
 .color-selector {
     display: flex;
