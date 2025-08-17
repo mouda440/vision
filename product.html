@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product - THE VISION</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/fonts.css">
+    <style>
+        .product-main-wrap {
+            display: flex;
+            gap: 64px;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+            max-width: none;
+            margin: 48px 0 0 0;
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+        }
+        .product-img-area {
+            flex: 1 1 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 280px;
+            max-width: 600px;
+        }
+        .product-img-area img {
+            width: 100%;
+            max-width: 480px;
+            border-radius: 24px;
+            box-shadow: 0 4px 24px #0004;
+            background: #fff;
+            object-fit: contain;
+            margin-bottom: 18px;
+            transition: opacity 0.25s;
+        }
+        .product-img-thumbs {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-start;
+            margin-top: 8px;
+            width: 100%;
+            max-width: 480px;
+        }
+        .product-img-thumb {
+            width: 54px;
+            height: 54px;
+            border-radius: 12px;
+            border: 2px solid #444;
+            background: #232323;
+            object-fit: cover;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: border-color 0.18s, opacity 0.18s;
+        }
+        .product-img-thumb.selected, .product-img-thumb:hover {
+            border-color: #e8491d;
+            opacity: 1;
+        }
+        .product-details-area {
+            flex: 1 1 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 280px;
+            max-width: 700px;
+            padding-left: 32px;
+        }
+        .product-title {
+            font-family: 'HORIZON', Arial, sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 18px;
+            letter-spacing: 0.07em;
+            color: #fff;
+        }
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #e8491d;
+            margin-bottom: 18px;
+        }
+        .product-selectors {
+            width: 100%;
+            margin-bottom: 24px;
+        }
+        .selector-label {
+            font-family: 'HORIZON', Arial, sans-serif;
+            font-size: 1.08em;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .selector-group {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .selector-btn {
+            font-family: 'HOTHOM', Arial, sans-serif;
+            font-size: 0.98em;
+            font-weight: 700;
+            background: #232323;
+            color: #fff;
+            border: 2px solid #444;
+            border-radius: 999px;
+            padding: 6px 14px; /* more balanced padding */
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.13s;
+            outline: none;
+            width: auto !important;
+            min-width: 0 !important;
+            max-width: none !important;
+            text-align: center;
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            /* Remove all-caps and letter-spacing for all, override below for style buttons */
+            text-transform: none;
+            letter-spacing: 0;
+        }
+        /* Style selector buttons: keep uppercase and letter-spacing for style names only */
+        #style-selector .selector-btn {
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            font-size: 0.98em;
+        }
+        .selector-btn.selected, .selector-btn:focus {
+            background: #e8491d;
+            color: #fff;
+            border-color: #e8491d;
+            transform: scale(1.04);
+        }
+        .product-stock-warning {
+            font-size: 1.08em;
+            color: #fe3130;
+            font-weight: 700;
+            margin-bottom: 18px;
+            min-height: 24px;
+        }
+        .product-buy-btn {
+            width: 100%;
+            margin-top: 18px;
+        }
+        .product-description {
+            font-size: 1.08em;
+            color: #e0e0e0;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(24,24,24,0.92) 60%, rgba(24,24,24,0.98) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-divider {
+            width: 100vw;
+            height: 48px;
+            margin: 0;
+            background: linear-gradient(180deg, rgba(24,24,24,0.01) 0%, #181818 100%);
+            border: none;
+            display: block;
+        }
+        .main-section {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            padding: 64px 0 0 0;
+        }
+        @media (max-width: 1200px) {
+            .product-main-wrap {
+                gap: 32px;
+            }
+            .product-details-area {
+                padding-left: 18px;
+            }
+        }
+        @media (max-width: 900px) {
+            .product-main-wrap {
+                flex-direction: column;
+                gap: 18px;
+                margin: 24px 0 0 0;
+            }
+            .product-img-area, .product-details-area {
+                max-width: 98vw;
+                min-width: 0;
+                padding-left: 0;
+            }
+            .product-img-area img {
+                max-width: 98vw;
+            }
+            .main-section { padding-top: 32px; }
+        }
+        @media (max-width: 600px) {
+            .product-main-wrap {
+                margin: 8px 0 0 0;
+            }
+            .product-title {
+                font-size: 1.3rem;
+            }
+            .product-price {
+                font-size: 1.1rem;
+            }
+            .selector-btn {
+                padding: 4px 8px;
+                font-size: 0.95em;
+            }
+            .compact-selector-row .selector-group {
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .main-section { padding-top: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="hero" style="position:relative;min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
+        <div class="hero-overlay"></div>
+        <a href="shopping.html" class="cta-btn" style="position:absolute;top:32px;left:32px;z-index:10;font-size:1.08em;padding:10px 28px;">
+            &#8592; Back to Shop
+        </a>
+        <a href="cart.html" class="cta-btn" style="position:absolute;top:32px;right:32px;z-index:10;font-size:1.08em;padding:10px 28px;">
+            🛒 Cart
+                <span class="cart-count-badge" id="cart-count-badge"></span>
+            </a>
+        </div>
+        <div class="hero-content">
+            </button>
+            <img src="img/logo.png" alt="THE VISION Logo" class="hero-logo">
+            <h1 class="hero-title" id="product-title" style="display:none;">Product</h1>
+            <div class="hero-quote">
+                "Every detail is a vision."
+            </div>
+        </div>
+        <div class="hero-divider"></div>
+    </header>
+    <main>
+        <section class="main-section" style="padding-top:0;">
+            <div class="product-main-wrap" id="product-main-wrap">
+                <!-- Product content will be rendered here -->
+            </div>
+            <div id="related-products-section" style="max-width:1100px;margin:48px auto 0 auto;padding:0 12px;">
+                <!-- Related products will be rendered here -->
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="footer-links">
+            <div>
+                <h3>Brand</h3>
+                <a href="#">Stores</a> |
+                <a href="#">Careers</a>
+            </div>
+            <div>
+                <h3>Support</h3>
+                <a href="#">Returns</a> |
+                <a href="#">Order Tracking</a> |
+                <a href="#">FAQ</a> |
+                <a href="#">Contact</a>
+            </div>
+            <div>
+                <h3>Boring Stuff</h3>
+                <a href="#">Privacy Policy</a> |
+                <a href="#">Terms & Conditions</a>
+            </div>
+            <div>
+                <h3>Follow Us</h3>
+                <a href="https://www.tiktok.com/@thevision.tn" target="_blank" rel="noopener">TikTok</a> |
+                <a href="https://www.instagram.com/thevision.tn/" target="_blank" rel="noopener">Instagram</a>
+            </div>
+        </div>
+        <div class="footer-copy">&copy; 2025 THE VISION. All rights reserved.</div>
+    </footer>
+    <script src="js/api.js"></script>
+    <script>
+    async function renderProduct() {
+        let products = [];
+        let inventory = {};
+        try {
+            products = await fetchProducts();
+            inventory = await getInventory();
+        } catch (e) {}
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        const product = products.find(p => p.id === id);
+        if (!product) {
+            document.getElementById('product-main-wrap').innerHTML = '<p style="color:#fe3130;font-size:1.2em;">Product not found.</p>';
+            return;
+        }
+        document.getElementById('product-title').textContent = product.name;
+
+        // Styles
+        let styles = [];
+        if (product.styles && Array.isArray(product.styles) && product.styles.length > 0) {
+            styles = product.styles;
+        } else if (product.type === 'tshirt') {
+            styles = [
+                { value: 'grey-black', label: 'Grey on Black' },
+                { value: 'white-black', label: 'White on Black' },
+                { value: 'white-red', label: 'White on Red' }
+            ];
+        }
+        let selectedStyle = styles.length > 0 ? styles[0].value : null;
+
+        // Images
+        let images = [];
+        if (Array.isArray(product.images) && product.images.length > 0) {
+            images = product.images.map(img => ({
+                name: img.name || 'Image',
+                style: img.style || null,
+                url: (/^https?:\/\//.test(img.url) || img.url.startsWith('img/')) ? img.url : 'img/' + img.url.replace(/^\.?\/*/, '')
+            }));
+        } else if (product.type === 'tshirt') {
+            images = [
+                { name: 'Front', style: 'grey-black', url: 'img/front black.jpg' },
+                { name: 'Back', style: 'grey-black', url: 'img/back grey-black.jpg' },
+                { name: 'Front', style: 'white-black', url: 'img/front black.jpg' },
+                { name: 'Back', style: 'white-black', url: 'img/back black-white.jpg' },
+                { name: 'Front', style: 'white-red', url: 'img/front red.jpg' },
+                { name: 'Back', style: 'white-red', url: 'img/back red-white.jpg' }
+            ];
+        } else if (product.type === 'jort') {
+            images = [
+                { name: 'Front', url: 'img/jort front.jpg' },
+                { name: 'Back', url: 'img/jort back.jpg' }
+            ];
+        }
+        function getImagesForStyle(style) {
+            let filtered = images.filter(img => img.style === style);
+            if (filtered.length === 0) filtered = images.filter(img => !img.style);
+            return filtered.length ? filtered : images;
+        }
+        let filteredImages = getImagesForStyle(selectedStyle);
+        let currentImgIdx = 0;
+
+        // Sizes
+        let sizes = [];
+        if (product.type === 'tshirt' && product.stock && selectedStyle && product.stock[selectedStyle]) {
+            sizes = Object.keys(product.stock[selectedStyle]);
+        } else if (product.stock) {
+            sizes = Object.keys(product.stock);
+        }
+        let selectedSize = sizes.length > 0 ? sizes[0] : null;
+
+        // Description (optional)
+        let description = product.description || "Premium quality, bold design. THE VISION is made for creators who dare.";
+
+        // HTML
+        let html = `
+            <div class="product-img-area">
+                <img id="mainProductImg" src="${filteredImages[0]?.url || 'img/logo.png'}" alt="${filteredImages[0]?.name || ''}">
+                <div class="product-img-thumbs" id="product-img-thumbs">
+                    ${filteredImages.map((imgObj, idx) => `
+                        <img src="${imgObj.url}" alt="${imgObj.name}" class="product-img-thumb${idx === 0 ? ' selected' : ''}" data-idx="${idx}">
+                    `).join('')}
+                </div>
+            </div>
+            <div class="product-details-area">
+                <div class="product-title">${product.name}</div>
+                <div class="product-price">${product.price} TND</div>
+                <div class="product-selectors">
+                    ${styles.length > 1 ? `
+                        <div class="selector-row compact-selector-row" style="margin-bottom:18px;">
+                            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                                <span class="selector-label" style="margin-bottom:0;">Style</span>
+                                <div class="selector-group" id="style-selector" style="margin-bottom:0;">
+                                    ${styles.map((opt, idx) => `
+                                        <button type="button" class="selector-btn${idx === 0 ? ' selected' : ''}" data-style="${opt.value}">${opt.label}</button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${sizes.length > 0 ? `
+                        <div class="selector-row" style="margin-bottom:18px;">
+                            <span class="selector-label">Size</span>
+                            <div class="selector-group" id="size-selector">
+                                ${sizes.map((size, idx) => `
+                                    <button type="button" class="selector-btn${idx === 0 ? ' selected' : ''}" data-size="${size}">${size}</button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="product-stock-warning" id="stock-warning"></div>
+                <button class="cta-btn product-buy-btn" id="buy-btn">Buy Now</button>
+                <div class="product-description">${description}</div>
+            </div>
+        `;
+        document.getElementById('product-main-wrap').innerHTML = html;
+
+        // Image thumbs logic
+        const mainImg = document.getElementById('mainProductImg');
+        const thumbs = document.querySelectorAll('.product-img-thumb');
+        thumbs.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                thumbs.forEach(t => t.classList.remove('selected'));
+                this.classList.add('selected');
+                const idx = parseInt(this.getAttribute('data-idx'), 10);
+                mainImg.style.opacity = 0.5;
+                setTimeout(() => {
+                    mainImg.src = filteredImages[idx]?.url || 'img/logo.png';
+                    mainImg.alt = filteredImages[idx]?.name || '';
+                    mainImg.style.opacity = 1;
+                }, 120);
+                currentImgIdx = idx;
+            });
+        });
+
+        // Style selector logic
+        if (styles.length > 1) {
+            const styleSelector = document.getElementById('style-selector');
+            styleSelector.querySelectorAll('.selector-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    styleSelector.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedStyle = this.getAttribute('data-style');
+                    // Update images for selected style
+                    filteredImages = getImagesForStyle(selectedStyle);
+                    currentImgIdx = 0;
+                    // Update main image and thumbs
+                    mainImg.src = filteredImages[0]?.url || 'img/logo.png';
+                    mainImg.alt = filteredImages[0]?.name || '';
+                    const thumbsArea = document.getElementById('product-img-thumbs');
+                    thumbsArea.innerHTML = filteredImages.map((imgObj, idx) => `
+                        <img src="${imgObj.url}" alt="${imgObj.name}" class="product-img-thumb${idx === 0 ? ' selected' : ''}" data-idx="${idx}">
+                    `).join('');
+                    // Re-attach thumb logic
+                    const newThumbs = document.querySelectorAll('.product-img-thumb');
+                    newThumbs.forEach(thumb => {
+                        thumb.addEventListener('click', function() {
+                            newThumbs.forEach(t => t.classList.remove('selected'));
+                            this.classList.add('selected');
+                            const idx = parseInt(this.getAttribute('data-idx'), 10);
+                            mainImg.style.opacity = 0.5;
+                            setTimeout(() => {
+                                mainImg.src = filteredImages[idx]?.url || 'img/logo.png';
+                                mainImg.alt = filteredImages[idx]?.name || '';
+                                mainImg.style.opacity = 1;
+                            }, 120);
+                            currentImgIdx = idx;
+                        });
+                    });
+                    // Update sizes for selected style
+                    if (product.type === 'tshirt' && product.stock && product.stock[selectedStyle]) {
+                        sizes = Object.keys(product.stock[selectedStyle]);
+                        selectedSize = sizes[0];
+                        const sizeSelector = document.getElementById('size-selector');
+                        sizeSelector.innerHTML = sizes.map((size, idx) => `
+                            <button type="button" class="selector-btn${idx === 0 ? ' selected' : ''}" data-size="${size}">${size}</button>
+                        `).join('');
+                        sizeSelector.querySelectorAll('.selector-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                sizeSelector.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('selected'));
+                                this.classList.add('selected');
+                                selectedSize = this.getAttribute('data-size');
+                                updateWarning();
+                            });
+                        });
+                    }
+                    updateWarning();
+                });
+            });
+        }
+
+        // Size selector logic
+        if (sizes.length > 0) {
+            const sizeSelector = document.getElementById('size-selector');
+            sizeSelector.querySelectorAll('.selector-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    sizeSelector.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedSize = this.getAttribute('data-size');
+                    updateWarning();
+                });
+            });
+        }
+
+        // Update stock warning logic
+        function updateWarning() {
+            let stock = 0;
+            if (product.type === 'tshirt' && selectedStyle && selectedSize) {
+                stock = inventory?.categories?.tshirt?.styles?.[selectedStyle]?.[selectedSize] || 0;
+            } else if (product.type === 'jort' && selectedSize) {
+                stock = inventory?.categories?.jort?.[selectedSize] || 0;
+            } else {
+                stock = inventory?.products?.[product.id]?.[selectedSize] || 0;
+            }
+
+            const warning = document.getElementById('stock-warning');
+            if (stock === 0) {
+                warning.textContent = 'Out of stock';
+            } else if (stock <= 30) {
+                warning.textContent = 'Last pieces!';
+            } else {
+                warning.textContent = '';
+            }
+        }
+        updateWarning();
+
+        // Update buy button logic
+        document.getElementById('buy-btn').onclick = async function() {
+            let stock = 0;
+            if (product.type === 'tshirt' && selectedStyle && selectedSize) {
+                stock = inventory?.categories?.tshirt?.styles?.[selectedStyle]?.[selectedSize] || 0;
+            } else if (product.type === 'jort' && selectedSize) {
+                stock = inventory?.categories?.jort?.[selectedSize] || 0;
+            } else {
+                stock = inventory?.products?.[product.id]?.[selectedSize] || 0;
+            }
+
+            if (stock <= 0) {
+                alert('Out of stock!');
+                return;
+            }
+            const item = {
+                name: product.name + (selectedStyle ? ` (${selectedStyle})` : '') + (selectedSize ? ` (Size: ${selectedSize})` : ''),
+                price: product.price,
+                img: (filteredImages[currentImgIdx]?.url || 'img/logo.png'),
+                type: product.type,
+                style: selectedStyle,
+                size: selectedSize
+            };
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            cart.push(item);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            window.location.href = 'cart.html';
+        };
+
+        // --- Related Products Section ---
+        function renderRelatedProducts() {
+            // Exclude current product
+            const others = products.filter(p => p.id !== product.id);
+            // Shuffle and pick 3
+            for (let i = others.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [others[i], others[j]] = [others[j], others[i]];
+            }
+            const picks = others.slice(0, 3);
+            if (picks.length === 0) {
+                document.getElementById('related-products-section').innerHTML = '';
+                return;
+            }
+            let html = `<h2 style="font-family:'HORIZON',Arial,sans-serif;font-size:1.3em;font-weight:800;letter-spacing:0.05em;margin-bottom:18px;color:#fff;text-align:left;">You may also be interested in</h2>`;
+            html += `<div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:flex-start;">`;
+            picks.forEach(p => {
+                // Pick an image
+                let img = (p.images && p.images[0] && p.images[0].url) ? p.images[0].url : 'img/logo.png';
+                if (!/^https?:\/\//.test(img) && !img.startsWith('img/')) {
+                    img = 'img/' + img.replace(/^\.?\/*/, '');
+                }
+                html += `
+                <div style="background:#232323;border-radius:16px;box-shadow:0 2px 12px #0002;padding:18px 14px;min-width:180px;max-width:220px;flex:1 1 180px;display:flex;flex-direction:column;align-items:center;">
+                    <a href="product.html?id=${p.id}" style="text-decoration:none;color:inherit;">
+                        <img src="${img}" alt="${p.name}" style="width:90px;height:90px;object-fit:contain;border-radius:10px;margin-bottom:10px;background:#fff;">
+                        <div style="font-family:'HOTHOM',Arial,sans-serif;font-size:1.08em;font-weight:700;text-align:center;margin-bottom:6px;color:#fff;">${p.name}</div>
+                        <div style="color:#e8491d;font-weight:700;font-size:1em;text-align:center;">${p.price} TND</div>
+                    </a>
+                </div>
+                `;
+            });
+            html += `</div>`;
+            document.getElementById('related-products-section').innerHTML = html;
+        }
+
+        renderRelatedProducts();
+        // --- End Related Products Section ---
+    }
+    document.addEventListener('DOMContentLoaded', renderProduct);
+    </script>
+</body>
+</html>
+            });
+            html += `</div>`;
+            document.getElementById('related-products-section').innerHTML = html;
+        }
+
+        renderRelatedProducts();
+        // --- End Related Products Section ---
+    }
+    document.addEventListener('DOMContentLoaded', renderProduct);
+    </script>
+</body>
+</html>

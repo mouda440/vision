@@ -4,41 +4,314 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE VISION</title>
-
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/fonts.css">
+    <meta name="description" content="THE VISION – Cinematic streetwear for creators.">
+    <meta property="og:title" content="THE VISION">
+    <meta property="og:description" content="Cinematic, bold, mysterious. Not just a brand. A statement.">
+    <meta property="og:image" content="img/logo.png">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#000">
+    <style>
+        .header-mosaic-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .header-mosaic-bg .mosaic-tile {
+            position: absolute;
+            opacity: 0.28;
+            transform: rotate(-18deg);
+            width: 120px;
+            height: 120px;
+            background: url('img/logo-black.png') center center/contain no-repeat;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(24,24,24,0.92) 60%, rgba(24,24,24,0.98) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-divider {
+            width: 100vw;
+            height: 48px;
+            margin: 0;
+            background: linear-gradient(180deg, rgba(24,24,24,0.01) 0%, #181818 100%);
+            border: none;
+            display: block;
+        }
+        .hero-cta-row {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            margin-top: 36px;
+            z-index: 2;
+        }
+        .hero-cta-row .cta-btn {
+            font-size: 1.18em;
+            padding: 18px 44px;
+        }
+        .hero-quote {
+            font-family: 'HORIZON', Arial, sans-serif;
+            font-size: 1.3em;
+            color: #f5f5f5;
+            background: rgba(0,0,0,0.55);
+            padding: 18px 32px;
+            border-radius: 18px;
+            box-shadow: 0 2px 18px #0004;
+            margin: 32px auto 0 auto;
+            max-width: 700px;
+            text-align: center;
+            letter-spacing: 0.09em;
+            opacity: 0.85;
+            z-index: 2;
+            position: relative;
+        }
+        .hero-scroll-down {
+            margin-top: 48px;
+            text-align: center;
+            color: #fff;
+            opacity: 0.7;
+            font-size: 1.2em;
+            letter-spacing: 0.13em;
+            animation: fadeIn 2.2s cubic-bezier(.4,0,.2,1);
+            z-index: 2;
+        }
+        .hero-scroll-down svg {
+            display: block;
+            margin: 0 auto;
+            animation: bounceDown 1.5s infinite alternate;
+        }
+        @keyframes bounceDown {
+            to { transform: translateY(12px);}
+        }
+        .main-section {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            padding: 64px 0 0 0;
+        }
+        @media (max-width: 900px) {
+            .main-section { padding-top: 32px; }
+        }
+        @media (max-width: 600px) {
+            .main-section { padding-top: 18px; }
+        }
+        .social-feed-grid {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 48px;
+            justify-content: center;
+            align-items: stretch;
+            margin-bottom: 24px;
+        }
+        .social-feed-item {
+            flex: 1 1 0;
+            max-width: 1800px;
+            min-width: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .social-feed-item iframe,
+        .social-feed-item blockquote {
+            width: 100%;
+            max-width: 1800px;
+            min-width: 800px;
+            height: 600px;
+            border-radius: 24px;
+            background: #232323;
+        }
+        @media (max-width: 1300px) {
+            .social-feed-grid {
+                gap: 24px;
+            }
+            .social-feed-item {
+                max-width: 700px;
+                min-width: 320px;
+            }
+            .social-feed-item iframe,
+            .social-feed-item blockquote {
+                max-width: 700px;
+                min-width: 320px;
+                height: 480px;
+            }
+        }
+        @media (max-width: 900px) {
+            .social-feed-grid {
+                flex-wrap: wrap;
+                gap: 18px;
+            }
+            .social-feed-item {
+                max-width: 98vw;
+                min-width: 220px;
+            }
+            .social-feed-item iframe,
+            .social-feed-item blockquote {
+                max-width: 98vw;
+                min-width: 220px;
+                height: 340px;
+            }
+        }
+        @media (max-width: 600px) {
+            .social-feed-grid {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .social-feed-item {
+                max-width: 98vw;
+                min-width: 140px;
+            }
+            .social-feed-item iframe,
+            .social-feed-item blockquote {
+                max-width: 98vw;
+                min-width: 140px;
+                height: 220px;
+            }
+        }
+    </style>
+    <!-- Add model-viewer web component -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
-    <header class="hero">
-        <img src="img/logo.jpg" alt="THE VISION Logo" class="hero-logo">
-        <h1 class="hero-title">THE VISION</h1>
-        <p class="hero-tag">Inspiring the new generation to create without fear.</p>
-        <a href="shopping.html" class="cta-btn">Visit the Shop</a>
+    <header class="hero" style="position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
+        <!-- Video background -->
+        <video id="hero-video-bg" autoplay muted loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:0.18;">
+            <source src="video/vision-campaign.mp4" type="video/mp4">
+        </video>
+        <!-- Mosaic background -->
+        <div class="header-mosaic-bg">
+            <div class="mosaic-tile" style="top:10px;left:5vw;"></div>
+            <div class="mosaic-tile" style="top:60px;left:22vw;"></div>
+            <div class="mosaic-tile" style="top:30px;left:40vw;"></div>
+            <div class="mosaic-tile" style="top:80px;left:60vw;"></div>
+            <div class="mosaic-tile" style="top:20px;left:78vw;"></div>
+            <div class="mosaic-tile" style="top:120px;left:12vw;"></div>
+            <div class="mosaic-tile" style="top:140px;left:55vw;"></div>
+            <div class="mosaic-tile" style="top:100px;left:85vw;"></div>
+            <div class="mosaic-tile" style="top:220px;left:8vw;"></div>
+            <div class="mosaic-tile" style="top:260px;left:28vw;"></div>
+            <div class="mosaic-tile" style="top:240px;left:48vw;"></div>
+            <div class="mosaic-tile" style="top:300px;left:68vw;"></div>
+            <div class="mosaic-tile" style="top:210px;left:85vw;"></div>
+            <div class="mosaic-tile" style="top:340px;left:18vw;"></div>
+            <div class="mosaic-tile" style="top:370px;left:60vw;"></div>
+            <div class="mosaic-tile" style="top:320px;left:80vw;"></div>
+            <!-- More mosaic tiles for denser effect -->
+            <div class="mosaic-tile" style="top:400px;left:10vw;"></div>
+            <div class="mosaic-tile" style="top:420px;left:30vw;"></div>
+            <div class="mosaic-tile" style="top:440px;left:50vw;"></div>
+            <div class="mosaic-tile" style="top:460px;left:70vw;"></div>
+            <div class="mosaic-tile" style="top:480px;left:90vw;"></div>
+            <div class="mosaic-tile" style="top:500px;left:15vw;"></div>
+            <div class="mosaic-tile" style="top:520px;left:35vw;"></div>
+            <div class="mosaic-tile" style="top:540px;left:55vw;"></div>
+            <div class="mosaic-tile" style="top:560px;left:75vw;"></div>
+            <div class="mosaic-tile" style="top:580px;left:95vw;"></div>
+            <div class="mosaic-tile" style="top:600px;left:25vw;"></div>
+            <div class="mosaic-tile" style="top:620px;left:45vw;"></div>
+            <div class="mosaic-tile" style="top:640px;left:65vw;"></div>
+            <div class="mosaic-tile" style="top:660px;left:85vw;"></div>
+            <div class="mosaic-tile" style="top:680px;left:5vw;"></div>
+            <div class="mosaic-tile" style="top:700px;left:50vw;"></div>
+            <div class="mosaic-tile" style="top:720px;left:80vw;"></div>
+            <div class="mosaic-tile" style="top:50px;left:10vw;"></div>
+            <div class="mosaic-tile" style="top:180px;left:35vw;"></div>
+            <div class="mosaic-tile" style="top:350px;left:70vw;"></div>
+            <div class="mosaic-tile" style="top:600px;left:60vw;"></div>
+            <div class="mosaic-tile" style="top:800px;left:20vw;"></div>
+            <div class="mosaic-tile" style="top:850px;left:55vw;"></div>
+            <div class="mosaic-tile" style="top:900px;left:85vw;"></div>
+            <div class="mosaic-tile" style="top:950px;left:40vw;"></div>
+            <div class="mosaic-tile" style="top:1000px;left:75vw;"></div>
+            <div class="mosaic-tile" style="top:1050px;left:15vw;"></div>
+            <div class="mosaic-tile" style="top:1100px;left:65vw;"></div>
+            <div class="mosaic-tile" style="top:1150px;left:35vw;"></div>
+            <div class="mosaic-tile" style="top:1200px;left:90vw;"></div>
+        </div>
+        <!-- Cinematic overlay for clarity -->
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+                <span style="font-family:'HORIZON',Arial,sans-serif;font-size:2.1em;font-weight:900;letter-spacing:0.09em;color:#fff;line-height:1;">The</span>
+                <!-- 3D logo with subtle scale pulse animation, no rotation/flip -->
+                <model-viewer id="vision-3d-logo"
+                    src="../logo.glb"
+                    alt="THE VISION 3D Logo"
+                    camera-controls
+                    shadow-intensity="1"
+                    style="width:120px;height:120px;margin-bottom:0;background:transparent;filter:drop-shadow(0 0 32px #fe3130);transition:transform 0.7s cubic-bezier(.4,0,.2,1);"
+                    ar ar-modes="webxr scene-viewer quick-look"
+                    disable-zoom
+                    exposure="1.1"
+                    poster="img/logo.png">
+                </model-viewer>
+            </div>
+            <div class="hero-slogan cinematic-reveal" style="font-family:'HORIZON',Arial,sans-serif;font-size:2.1em;font-weight:900;letter-spacing:0.08em;color:#fff;text-align:center;margin:18px 0 0 0;">
+                <span>I HAVE A VISION,</span>
+                <span>DO YOU HAVE</span>
+                <span>A VISION?</span>
+            </div>
+            <div class="hero-cta-row">
+                <a href="about.html" class="cta-btn">ABOUT THE VISION</a>
+                <a href="shopping.html" class="cta-btn black-btn">GET THE DROP</a>
+            </div>
+            <div class="hero-quote">
+                "This is not clothing. This is purpose."
+            </div>
+            <div class="hero-scroll-down">
+                <span>Scroll to explore</span>
+                <svg width="32" height="32" fill="none" stroke="#fff" stroke-width="2"><path d="M16 8v16M8 20l8 8 8-8"/></svg>
+            </div>
+        </div>
+        <div class="hero-divider"></div>
     </header>
     <main>
-        <section class="about-section">
-            <h2>About Us</h2>
-            <p>Born from a dream, THE VISION empowers creators to pursue their passions and break boundaries. Our collections are designed to inspire boldness and authenticity in every step you take.</p>
+        <section id="explore" class="main-section">
+            <h2 class="section-title-fade">About Us</h2>
+            <p style="font-size:1.15em;line-height:1.7;color:#e0e0e0;margin-bottom:32px;">
+                Born from a dream, THE VISION empowers creators to pursue their passions and break boundaries. Our collections are designed to inspire boldness and authenticity in every step you take.
+            </p>
+            <a href="about.html" class="cta-btn">LEARN MORE</a>
         </section>
-        <section class="newsletter-section">
-            <h2>Join the Movement</h2>
-            <p>Sign up for exclusive updates, drops, and inspiration.</p>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Your email address" required>
-                <button type="submit">Join</button>
-            </form>
+        <section id="social-feed" class="main-section" style="padding-top:0;">
+            <h2 class="section-title-fade">Social Feed</h2>
+            <div class="social-feed-grid" style="display:flex;flex-wrap:nowrap;gap:48px;justify-content:center;align-items:stretch;">
+                <!-- Instagram Embed Example -->
+                <div class="social-feed-item" style="flex:1 1 0;max-width:1800px;min-width:800px;display:flex;align-items:center;justify-content:center;">
+                    <iframe src="https://www.instagram.com/thevision.tn/embed"
+                        width="1600" height="600"
+                        frameborder="0" scrolling="no" allowtransparency="true"
+                        style="border-radius:24px;border:none;width:100%;height:600px;max-width:1800px;min-width:800px;">
+                    </iframe>
+                </div>
+                <!-- TikTok Preview Image Instead of Embed -->
+                <div class="social-feed-item" style="flex:1 1 0;max-width:1800px;min-width:800px;display:flex;align-items:center;justify-content:center;">
+                    <a href="https://www.tiktok.com/@thevision.tn" target="_blank" rel="noopener" style="display:block;width:100%;height:600px;max-width:1800px;min-width:800px;border-radius:24px;overflow:hidden;position:relative;background:#232323;">
+                        <img src="img/tiktok-preview.jpg" alt="TikTok Feed Preview" style="width:100%;height:100%;object-fit:cover;display:block;">
+                        <span style="position:absolute;bottom:24px;left:24px;font-family:'HORIZON',Arial,sans-serif;font-size:2.2em;color:#fff;background:rgba(0,0,0,0.55);padding:18px 32px;border-radius:18px;box-shadow:0 2px 18px #0004;">See our TikTok</span>
+                    </a>
+                </div>
+            </div>
         </section>
     </main>
     <footer class="footer">
         <div class="footer-links">
             <div>
-                <h3>Brand</h3>
-                <a href="#">Stores</a> |
-                <a href="#">Careers</a>
-            </div>
-            <div>
                 <h3>Support</h3>
-                <a href="#">Returns</a> |
-                <a href="#">Order Tracking</a> |
                 <a href="#">FAQ</a> |
                 <a href="#">Contact</a>
             </div>
@@ -47,10 +320,30 @@
                 <a href="#">Privacy Policy</a> |
                 <a href="#">Terms & Conditions</a>
             </div>
+            <div>
+                <h3>Follow Us</h3>
+                <a href="https://www.tiktok.com/@thevision.tn" target="_blank" rel="noopener">TikTok</a> |
+                <a href="https://www.instagram.com/thevision.tn/" target="_blank" rel="noopener">Instagram</a>
+            </div>
         </div>
         <div class="footer-copy">&copy; 2025 THE VISION. All rights reserved.</div>
     </footer>
     <script src="js/api.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        // Subtle scale pulse animation for 3D logo (no rotation/flip)
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.getElementById('vision-3d-logo');
+            if (!logo) return;
+            let t = 0;
+            function animate() {
+                t += 0.03;
+                const scale = 1 + Math.sin(t) * 0.04;
+                logo.style.transform = `scale(${scale})`;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        });
+    </script>
 </body>
 </html>

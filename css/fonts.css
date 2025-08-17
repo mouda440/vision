@@ -22,3 +22,25 @@
     font-weight: normal;
     font-style: normal;
 }
+
+/* Inter font-face (Google Fonts fallback) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+/* Neue Montreal font-face */
+@font-face {
+    font-family: 'Neue Montreal';
+    src: url('../fonts/NeueMontreal-Regular.woff2') format('woff2'),
+         url('../fonts/NeueMontreal-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Neue Montreal';
+    src: url('../fonts/NeueMontreal-Bold.woff2') format('woff2'),
+         url('../fonts/NeueMontreal-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* Space Grotesk for backup headline font */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap');

@@ -4,78 +4,258 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping - THE VISION</title>
-
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/fonts.css">
+    <style>
+        .product-list-clean {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            justify-content: center;
+            width: 100%;
+            align-items: stretch;
+            margin-top: 24px;
+        }
+        .product-card-clean {
+            background: #232323;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px #0002;
+            padding: 32px 24px 24px 24px;
+            min-width: 260px;
+            max-width: 340px;
+            flex: 1 1 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            transition: box-shadow 0.18s, transform 0.18s;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-card-clean img {
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #fff;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 8px #0001;
+            transition: transform 0.18s;
+        }
+        .product-card-clean h3 {
+            font-family: 'HOTHOM', Arial, sans-serif;
+            font-size: 1.18rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 0 16px 0;
+            text-align: center;
+        }
+        .product-card-clean .card-btn-area {
+            margin-top: 14px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .product-card-clean:hover img {
+            transform: scale(1.05);
+        }
+        .hero-quote {
+            font-family: 'HORIZON', Arial, sans-serif;
+            font-size: 1.1em;
+            color: #f5f5f5;
+            background: rgba(0,0,0,0.55);
+            padding: 14px 24px;
+            border-radius: 18px;
+            box-shadow: 0 2px 18px #0004;
+            margin: 28px auto 0 auto;
+            max-width: 600px;
+            text-align: center;
+            letter-spacing: 0.09em;
+            opacity: 0.85;
+            z-index: 2;
+            position: relative;
+        }
+        .hero-scroll-down {
+            margin-top: 32px;
+            text-align: center;
+            color: #fff;
+            opacity: 0.7;
+            font-size: 1em;
+            letter-spacing: 0.13em;
+            animation: fadeIn 2.2s cubic-bezier(.4,0,.2,1);
+        }
+        .hero-scroll-down svg {
+            display: block;
+            margin: 0 auto;
+            animation: bounceDown 1.5s infinite alternate;
+        }
+        @keyframes bounceDown {
+            to { transform: translateY(12px);}
+        }
+        @media (max-width: 900px) {
+            .product-list-clean {
+                gap: 16px;
+            }
+            .product-card-clean {
+                min-width: 180px;
+                max-width: 60vw;
+                padding: 18px 2vw 18px 2vw;
+            }
+            .product-card-clean img {
+                width: 110px;
+                height: 110px;
+            }
+        }
+        @media (max-width: 600px) {
+            .product-list-clean {
+                gap: 8px;
+            }
+            .product-card-clean {
+                min-width: 120px;
+                max-width: 98vw;
+                padding: 10px 1vw 10px 1vw;
+            }
+            .product-card-clean img {
+                width: 80px;
+                height: 80px;
+            }
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(24,24,24,0.92) 60%, rgba(24,24,24,0.98) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-divider {
+            width: 100vw;
+            height: 48px;
+            margin: 0;
+            background: linear-gradient(180deg, rgba(24,24,24,0.01) 0%, #181818 100%);
+            border: none;
+            display: block;
+        }
+        .main-section {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            padding: 64px 0 0 0;
+        }
+        @media (max-width: 900px) {
+            .main-section { padding-top: 32px; }
+        }
+        @media (max-width: 600px) {
+            .main-section { padding-top: 18px; }
+        }
+        /* Parallax background for hero */
+        .parallax-bg {
+            background-image: url('img/hero-bg.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+        /* Cinematic reveal animation */
+        .cinematic-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: revealAnim 0.8s forwards;
+        }
+        @keyframes revealAnim {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Fade-in effect for sections */
+        .section-fade {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInAnim 0.8s forwards;
+        }
+        @keyframes fadeInAnim {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-    <header class="hero">
-        <img src="img/logo.jpg" alt="THE VISION Logo" class="hero-logo">
-        <h1 class="hero-title">Shopping</h1>
-        <div class="hero-cart-link">
-            <a href="cart.html" class="cta-btn">Cart</a>
+    <header class="hero parallax-bg" style="position:relative;min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
+        <div class="header-mosaic-bg">
+            <!-- Copy all mosaic tiles from index.html here -->
+            <!-- ...mosaic tiles... -->
         </div>
+        <div class="hero-overlay"></div>
+        <a href="index.html" class="cta-btn" style="position:absolute;top:32px;left:32px;z-index:10;font-size:1.08em;padding:10px 28px;">
+            &#8592; Back to Home
+        </a>
+        <a href="cart.html" class="cta-btn" style="position:absolute;top:32px;right:32px;z-index:10;font-size:1.08em;padding:10px 28px;">
+            🛒 Cart
+            <span class="cart-count-badge" id="cart-count-badge"></span>
+        </a>
+        <div class="hero-content">
+            <img src="img/logo.png" alt="THE VISION Logo" class="hero-logo">
+            <h1 class="hero-title cinematic-reveal"><span>Shop</span></h1>
+            <div class="hero-quote cinematic-reveal">
+                <span>"Wear your vision. Make your statement."</span>
+            </div>
+            <div class="hero-scroll-down">
+                <span>Scroll to browse products</span>
+                <svg width="32" height="32" fill="none" stroke="#fff" stroke-width="2"><path d="M16 8v16M8 20l8 8 8-8"/></svg>
+            </div>
+        </div>
+        <div class="hero-divider"></div>
     </header>
-    <div style="text-align:center;">
-        <a href="index.html" class="cta-btn">Back to Home</a>
-    </div>
     <main>
-        <section>
-            <h2>Our Products</h2>
-            <div class="product-list" id="product-list" style="display:flex;justify-content:center;gap:32px;flex-wrap:wrap;">
+        <section class="main-section section-fade">
+            <h2 class="section-title-fade">Our Products</h2>
+            <div class="lookbook-scroll" id="product-list">
                 <!-- Products will be rendered here -->
             </div>
         </section>
     </main>
-    <footer>
-        <p>&copy; 2025 the vision</p>
+    <footer class="footer">
+        <div class="footer-links">
+            <div>
+                <h3>Support</h3>
+                <a href="#">FAQ</a> |
+                <a href="#">Contact</a>
+            </div>
+            <div>
+                <h3>Boring Stuff</h3>
+                <a href="#">Privacy Policy</a> |
+                <a href="#">Terms & Conditions</a>
+            </div>
+            <div>
+                <h3>Follow Us</h3>
+                <a href="https://www.tiktok.com/@thevision.tn" target="_blank" rel="noopener">TikTok</a> |
+                <a href="https://www.instagram.com/thevision.tn/" target="_blank" rel="noopener">Instagram</a>
+            </div>
+        </div>
+        <div class="footer-copy">&copy; 2025 THE VISION. All rights reserved.</div>
     </footer>
-    <script>
-    function updateStyles() {
-        const color = document.getElementById('color').value;
-        const styleSelect = document.getElementById('style');
-        styleSelect.innerHTML = '';
-        if (color === 'red') {
-            styleSelect.innerHTML = '<option value="white-red">White on Red</option>';
-        } else {
-            styleSelect.innerHTML = 
-                '<option value="grey-black">Grey on Black</option>' +
-                '<option value="white-black">White on Black</option>';
-        }
-        updateImages();
-    }
-    function updateImages() {
-        const color = document.getElementById('color').value;
-        const style = document.getElementById('style').value;
-        const frontImg = document.getElementById('frontImg');
-        const backImg = document.getElementById('backImg');
-        if (color === 'red') {
-            frontImg.src = 'img/front red.jpg';
-            backImg.src = 'img/back red-white.jpg';
-            frontImg.alt = 'Front Red';
-            backImg.alt = 'Back White on Red';
-        } else if (style === 'grey-black') {
-            frontImg.src = 'img/front black.jpg';
-            backImg.src = 'img/back grey-black.jpg';
-            frontImg.alt = 'Front Black';
-            backImg.alt = 'Back Grey on Black';
-        } else if (style === 'white-black') {
-            frontImg.src = 'img/front black.jpg';
-            backImg.src = 'img/back black-white.jpg';
-            frontImg.alt = 'Front Black';
-            backImg.alt = 'Back White on Black';
-        }
-    }
-    // Initialize on page load
-    updateStyles();
-    </script>
     <script src="js/api.js"></script>
     <script>
     async function renderProducts() {
         const container = document.getElementById('product-list');
         container.innerHTML = '<p>Loading...</p>';
         let products = [];
+        let inventory = {};
         try {
             products = await fetchProducts();
+            inventory = await getInventory();
         } catch (e) {
             container.innerHTML = '<p>Failed to load products.</p>';
             return;
@@ -86,25 +266,66 @@
         }
         let html = '';
         products.forEach(product => {
-            let img;
+            let img, altImg = null;
             if (product.type === 'tshirt') {
                 img = 'img/front black.jpg';
+                // Try to find alternate image
+                if (product.images && product.images.length > 1) {
+                    altImg = product.images[1].url;
+                    if (!/^https?:\/\//.test(altImg) && !altImg.startsWith('img/')) {
+                        altImg = 'img/' + altImg.replace(/^\.?\/*/, '');
+                    }
+                }
             } else if (product.type === 'jort') {
-                img = 'img/jort back.jpg';
+                img = 'img/jort front.jpg';
+                if (product.images && product.images.length > 1) {
+                    altImg = product.images[1].url;
+                    if (!/^https?:\/\//.test(altImg) && !altImg.startsWith('img/')) {
+                        altImg = 'img/' + altImg.replace(/^\.?\/*/, '');
+                    }
+                }
             } else {
-                img = (product.images && product.images[0] && product.images[0].url) ? product.images[0].url : 'img/logo.jpg';
+                img = (product.images && product.images[0] && product.images[0].url) ? product.images[0].url : 'img/logo.png';
                 if (!/^https?:\/\//.test(img) && !img.startsWith('img/')) {
                     img = 'img/' + img.replace(/^\.?\/*/, '');
                 }
             }
+            // Check if product has any stock
+            let hasStock = false;
+            if (product.type === 'tshirt') {
+                for (const style in inventory?.categories?.tshirt?.styles || {}) {
+                    for (const size in inventory?.categories?.tshirt?.styles[style] || {}) {
+                        if (inventory.categories.tshirt.styles[style][size] > 0) {
+                            hasStock = true;
+                            break;
+                        }
+                    }
+                }
+            } else if (product.type === 'jort') {
+                for (const size in inventory?.categories?.jort || {}) {
+                    if (inventory.categories.jort[size] > 0) {
+                        hasStock = true;
+                        break;
+                    }
+                }
+            } else {
+                for (const size in inventory?.products?.[product.id] || {}) {
+                    if (inventory.products[product.id][size] > 0) {
+                        hasStock = true;
+                        break;
+                    }
+                }
+            }
+
             html += `
-                <div class="product-card" style="background:#fafbfc;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(45,137,239,0.05);text-align:center;">
-                    <img src="${img}" alt="${product.name}" style="width:120px;height:auto;margin-bottom:12px;" onerror="this.src='img/logo.jpg'">
-                    <h3 class="product-title-black">${product.name}</h3>
-                    <div style="margin:16px 0;">
-                        <a href="${product.type === 'tshirt' ? 'tshirt.html' : (product.type === 'jort' ? 'jort.html' : '#')}" class="cta-btn black-btn">View ${product.name}</a>
+                <div class="product-card-clean" style="position:relative;overflow:hidden;">
+                    <img src="${img}" alt="${product.name}" onerror="this.src='img/logo.png'" 
+                        ${altImg ? `onmouseover="this.src='${altImg}'" onmouseout="this.src='${img}'"` : ''}>
+                    <h3>${product.name}</h3>
+                    ${!hasStock ? '<div style="color:#fe3130;font-size:0.9em;margin:-8px 0 8px 0;">Out of Stock</div>' : ''}
+                    <div class="card-btn-area">
+                        <a href="product.html?id=${product.id}" class="cta-btn black-btn" style="padding:10px 22px;font-size:1em;">View</a>
                     </div>
-                    <div style="font-size:1.1em;color:#181818;font-weight:600;">${product.price} TND</div>
                 </div>
             `;
         });
