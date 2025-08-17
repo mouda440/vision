@@ -503,7 +503,7 @@
                 stock = inventory?.categories?.tshirt?.styles?.[selectedStyle]?.[selectedSize] || 0;
             } else if (product.type === 'jort' && selectedSize) {
                 stock = inventory?.categories?.jort?.[selectedSize] || 0;
-            } else {
+            } else if (selectedSize) {
                 stock = inventory?.products?.[product.id]?.[selectedSize] || 0;
             }
 
@@ -520,12 +520,19 @@
 
         // Update buy button logic
         document.getElementById('buy-btn').onclick = async function() {
+            // Refresh inventory before purchase
+            try {
+                inventory = await getInventory();
+            } catch (e) {
+                console.error('Failed to refresh inventory:', e);
+            }
+            
             let stock = 0;
             if (product.type === 'tshirt' && selectedStyle && selectedSize) {
                 stock = inventory?.categories?.tshirt?.styles?.[selectedStyle]?.[selectedSize] || 0;
             } else if (product.type === 'jort' && selectedSize) {
                 stock = inventory?.categories?.jort?.[selectedSize] || 0;
-            } else {
+            } else if (selectedSize) {
                 stock = inventory?.products?.[product.id]?.[selectedSize] || 0;
             }
 
@@ -538,6 +545,7 @@
                 price: product.price,
                 img: (filteredImages[currentImgIdx]?.url || 'img/logo.png'),
                 type: product.type,
+                id: product.id,
                 style: selectedStyle,
                 size: selectedSize
             };

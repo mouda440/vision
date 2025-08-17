@@ -220,7 +220,7 @@
         document.getElementById('products-list').innerHTML = '<div class="loading-indicator">Loading products...</div>';
         allProducts = await fetchProducts();
         // Fetch real stocks for use in editProduct
-        realStocks = await fetchStocks();
+        realStocks = await getInventory();
         filteredProducts = allProducts;
         updateProductList();
     }
@@ -306,15 +306,15 @@
         (product.images || []).forEach(img => addImageField(img.name, img.url, img.style || ''));
         if ((product.images || []).length === 0) addImageField();
         // Use real stocks for this product
-        let stockData = null;
-        if (product.type === 'tshirt' && realStocks.tshirt) {
-            stockData = { ...product, stock: realStocks.tshirt };
-        } else if (product.type === 'jort' && realStocks.jort) {
-            stockData = { ...product, stock: realStocks.jort };
-        } else if (realStocks[product.id]) {
-            stockData = { ...product, stock: realStocks[product.id] };
+        let stockData = { ...product };
+        if (product.type === 'tshirt' && realStocks?.categories?.tshirt?.styles) {
+            stockData.stock = realStocks.categories.tshirt.styles;
+        } else if (product.type === 'jort' && realStocks?.categories?.jort) {
+            stockData.stock = realStocks.categories.jort;
+        } else if (realStocks?.products?.[product.id]) {
+            stockData.stock = realStocks.products[product.id];
         } else {
-            stockData = product;
+            stockData.stock = {};
         }
         document.getElementById('stock-configuration').innerHTML = generateStockForm(stockData);
     }
@@ -344,14 +344,14 @@
     // --- Generate Stock Form: show real stocks as "Current: X" next to input ---
     function generateStockForm(product) {
         let html = '';
-        // Use realStocks for current values
+        // Use inventory for current values
         let currentStocks = {};
-        if (product.type === 'tshirt' && realStocks.tshirt) {
-            currentStocks = realStocks.tshirt;
-        } else if (product.type === 'jort' && realStocks.jort) {
-            currentStocks = realStocks.jort;
-        } else if (realStocks[product.id]) {
-            currentStocks = realStocks[product.id];
+        if (product.type === 'tshirt' && realStocks?.categories?.tshirt?.styles) {
+            currentStocks = realStocks.categories.tshirt.styles;
+        } else if (product.type === 'jort' && realStocks?.categories?.jort) {
+            currentStocks = realStocks.categories.jort;
+        } else if (realStocks?.products?.[product.id]) {
+            currentStocks = realStocks.products[product.id];
         }
         if (product.type === 'tshirt' || (Array.isArray(product.styles) && product.styles.length > 0)) {
             const stylesArr = product.styles && product.styles.length > 0
@@ -469,18 +469,18 @@
 
     // --- Stocks Display ---
     async function renderStocks() {
-        let stocks = {};
+        let inventory = {};
         try {
-            stocks = await fetchStocks();
+            inventory = await getInventory();
         } catch (e) {}
         let html = `<h3 style="margin-bottom:12px;">Current Stocks</h3>`;
-        if (!stocks || Object.keys(stocks).length === 0) {
+        if (!inventory || Object.keys(inventory).length === 0) {
             html += `<div style="color:#fe3130;">No stock data.</div>`;
         } else {
             // T-shirt stocks
-            if (stocks.tshirt) {
+            if (inventory.categories?.tshirt?.styles) {
                 html += `<div style="margin-bottom:10px;"><b>T-shirts:</b></div>`;
-                Object.entries(stocks.tshirt).forEach(([style, sizes]) => {
+                Object.entries(inventory.categories.tshirt.styles).forEach(([style, sizes]) => {
                     html += `<div style="margin-bottom:4px;">${style}: `;
                     Object.entries(sizes).forEach(([size, qty]) => {
                         html += `<span style="margin-right:10px;">${size}: <span style="color:${qty === 0 ? '#fe3130' : '#fff'}">${qty}</span></span>`;
@@ -489,23 +489,23 @@
                 });
             }
             // Jort stocks
-            if (stocks.jort) {
+            if (inventory.categories?.jort) {
                 html += `<div style="margin-top:10px;margin-bottom:4px;"><b>Jorts:</b> `;
-                Object.entries(stocks.jort).forEach(([size, qty]) => {
+                Object.entries(inventory.categories.jort).forEach(([size, qty]) => {
                     html += `<span style="margin-right:10px;">${size}: <span style="color:${qty === 0 ? '#fe3130' : '#fff'}">${qty}</span></span>`;
                 });
                 html += `</div>`;
             }
             // Other products
-            Object.entries(stocks).forEach(([key, value]) => {
-                if (key !== 'tshirt' && key !== 'jort') {
+            if (inventory.products) {
+                Object.entries(inventory.products).forEach(([key, value]) => {
                     html += `<div style="margin-top:10px;"><b>${key}:</b> `;
                     Object.entries(value).forEach(([size, qty]) => {
                         html += `<span style="margin-right:10px;">${size}: <span style="color:${qty === 0 ? '#fe3130' : '#fff'}">${qty}</span></span>`;
                     });
                     html += `</div>`;
-                }
-            });
+                });
+            }
         }
         document.getElementById('stocks-display').innerHTML = html;
     }

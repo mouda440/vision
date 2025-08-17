@@ -48,14 +48,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const selector = document.getElementById('size-selector');
     const hiddenInput = document.getElementById('size');
     async function updateWarning() {
-        let stocks = {};
-        if (window.fetchStocks) {
-            stocks = await window.fetchStocks();
-        } else if (window.api && window.api.fetchStocks) {
-            stocks = await window.api.fetchStocks();
+        let inventory = {};
+        try {
+            inventory = await getInventory();
+        } catch (e) {
+            console.error('Failed to fetch inventory:', e);
         }
         const size = hiddenInput.value;
-        let stock = stocks?.jort?.[size] ?? 0;
+        let stock = inventory?.categories?.jort?.[size] ?? 0;
         document.getElementById('stock-warning').textContent = stock === 0 ? 'Out of stock' : (stock <= 30 ? 'Last pieces!' : '');
     }
     selector.querySelectorAll('.size-option').forEach(btn => {
@@ -123,8 +123,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             showBack.classList.add('selected');
         })();
         window.fetchStocks = async function() {
-            if (jort.stock) return { jort: jort.stock };
-            return await window.fetchStocks();
+            if (jort.stock) {
+                return { 
+                    categories: { 
+                        jort: jort.stock 
+                    } 
+                };
+            }
+            return await getInventory();
         };
     }
 });

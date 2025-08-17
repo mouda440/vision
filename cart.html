@@ -95,7 +95,15 @@ async function submitCheckout(event) {
             } else if (item.type === 'jort') {
                 available = inventory?.categories?.jort?.[item.size] || 0;
             } else {
-                available = inventory?.products?.[item.id]?.[item.size] || 0;
+                // Try to find product ID if not present
+                let productId = item.id;
+                if (!productId) {
+                    const products = await fetchProducts();
+                    const baseName = item.name.split(' (')[0];
+                    const product = products.find(p => p.name === baseName);
+                    productId = product?.id;
+                }
+                available = inventory?.products?.[productId]?.[item.size] || 0;
             }
             
             if (available <= 0) {

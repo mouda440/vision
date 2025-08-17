@@ -175,15 +175,15 @@ hiddenInput.dispatchEvent(new Event('change'));
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     async function updateWarning() {
-        let stocks = {};
-        if (window.fetchStocks) {
-            stocks = await window.fetchStocks();
-        } else if (window.api && window.api.fetchStocks) {
-            stocks = await window.api.fetchStocks();
+        let inventory = {};
+        try {
+            inventory = await getInventory();
+        } catch (e) {
+            console.error('Failed to fetch inventory:', e);
         }
         const style = document.getElementById('style').value;
         const size = document.getElementById('size').value;
-        let stock = stocks?.tshirt?.[style]?.[size] ?? 0;
+        let stock = inventory?.categories?.tshirt?.styles?.[style]?.[size] ?? 0;
         document.getElementById('stock-warning').textContent = stock === 0 ? 'Out of stock' : (stock <= 30 ? 'Last pieces!' : '');
     }
     updateWarning();
@@ -309,8 +309,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             window._backSrc = backImg;
         })();
         window.fetchStocks = async function() {
-            if (tshirt.stock) return { tshirt: tshirt.stock };
-            return await window.fetchStocks();
+            if (tshirt.stock) {
+                return { 
+                    categories: { 
+                        tshirt: { 
+                            styles: tshirt.stock 
+                        } 
+                    } 
+                };
+            }
+            return await getInventory();
         };
     }
 });
